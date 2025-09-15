@@ -69,7 +69,8 @@ export function ProjectsFilter({
 					</span>
 				</h2>
 				<p className="text-muted-foreground">
-					Filter projects to find exactly what you're looking for
+					Filter projects to find exactly what you&lsquo;re looking
+					for
 				</p>
 			</motion.div>
 

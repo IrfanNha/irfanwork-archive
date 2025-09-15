@@ -34,7 +34,7 @@ export function HomeCoreInterests() {
 							{/* Title */}
 							<h2 className="text-4xl md:text-5xl font-bold">
 								<span className="bg-gradient-to-r from-foreground to-yellow-600 bg-clip-text text-transparent">
-									What I'm
+									What I&lsquo;m
 								</span>
 								<br />
 								<span className="bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent">
@@ -189,7 +189,7 @@ export function HomeCoreInterests() {
 							className="text-center mt-16">
 							<motion.p className="text-muted-foreground mb-6">
 								Want to dive deeper into any of these areas?
-								Let's have a conversation!
+								Let&lsquo;s have a conversation!
 							</motion.p>
 
 							<MotionLink

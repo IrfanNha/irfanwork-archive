@@ -116,7 +116,7 @@ export function HomeHero() {
 											duration: 0.6,
 											delay: 0.4,
 										}}>
-										Hello, I'm
+										Hello, I&lsquo;m
 									</motion.span>
 									<motion.span
 										className="block bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent"

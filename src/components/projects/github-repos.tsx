@@ -21,6 +21,7 @@ import {
 	TableBody,
 	TableCell,
 } from "../ui/table";
+import Image from "next/image";
 
 interface GitHubRepo {
 	id: number;
@@ -161,7 +162,7 @@ export function GitHubRepos() {
 								transition={{ type: "spring", stiffness: 200 }}
 								className="relative">
 								<div className="absolute inset-0 rounded-fullanimate-pulse" />
-								<img
+								<Image
 									src={user.avatar_url}
 									alt={user.name}
 									className="relative w-28 h-28 rounded-full border-2 border-yellow-500/40"
