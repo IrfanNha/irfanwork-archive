@@ -21,7 +21,7 @@ export function Container({
 				// responsive max-width
 				"mx-auto w-full max-w-7xl",
 				// horizontal padding sesuai device
-				"px-8 sm:px-6 lg:px-8",
+				"px-4 sm:px-6 lg:px-8",
 				className
 			)}>
 			{children}
