@@ -47,7 +47,7 @@ export function BackgroundBlobs() {
 
 			{/* Large animated blobs */}
 			<motion.div
-				className="absolute top-1/4 left-1/4 w-72 h-72 bg-yellow-500/20 rounded-full blur-3xl animate-pulse"
+				className="absolute top-1/4 left-1/4 w-72 h-72 bg-yellow-300/10 rounded-full blur-3xl animate-pulse"
 				style={{
 					transform: `translate(${parallaxX * 0.5}px, ${parallaxY * 0.5}px)`,
 				}}
@@ -68,7 +68,7 @@ export function BackgroundBlobs() {
 
 			{/* Additional floating blobs */}
 			<motion.div
-				className="absolute top-1/2 right-1/3 w-64 h-64 bg-yellow-400/15 rounded-full blur-3xl"
+				className="absolute top-1/2 right-1/3 w-64 h-64 bg-yellow-400/6 rounded-full blur-3xl"
 				style={{
 					transform: `translate(${parallaxX * 0.8}px, ${parallaxY * 0.8}px)`,
 				}}

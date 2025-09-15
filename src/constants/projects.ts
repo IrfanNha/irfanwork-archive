@@ -37,8 +37,8 @@ export const PROJECTS: Project[] = [
     description: "Personal portfolio built with Next.js, Tailwind CSS & Framer Motion.",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
     category: "web",
-    url: "https://github.com/xanax/portfolio",
-    liveUrl: "https://xanaxportfolio.com",
+    url: "https://github.com/IrfanNha/irfanwork",
+    liveUrl: "https://irfanwork.cloud",
     image: "/projects/portfolio.png",
   },
   {
@@ -47,8 +47,8 @@ export const PROJECTS: Project[] = [
     description: "A web application to read, search, and bookmark Quranic verses. Fully responsive and optimized for mobile.",
     tech: ["Next.js", "TypeScript", "React", "Tailwind CSS", "shadcn/ui"],
     category: "web",
-    url: "https://quran-app-irfanwork.vercel.app",
-    liveUrl: "https://xanaxquran.com",
+    url: "https://github.com/IrfanNha/quran-app",
+    liveUrl: "https://quran-app-irfanwork.vercel.app",
     image: "/projects/quran-app.png",
   },
   {
@@ -57,8 +57,8 @@ export const PROJECTS: Project[] = [
     description: "Web-based Bitcoin address generator using elliptic curve cryptography. Built with Next.js and TypeScript.",
     tech: ["Next.js", "TypeScript", "elliptic", "crypto", "Tailwind CSS", "shadcn/ui"],
     category: "tool",
-    url: "https://github.com/xanax/btc-address-generator",
-    liveUrl: "https://xanaxbtc.com",
+    url: "https://github.com/IrfanNha/seamless-wallet",
+    liveUrl: "https://btcseamless-wallet.vercel.app",
     image: "/projects/seamless-wallet.png",
   },
 ];
