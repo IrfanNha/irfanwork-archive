@@ -64,9 +64,7 @@ export function ProjectsFilter({
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}>
 				<h2 className="text-2xl md:text-3xl font-bold">
-					<span className="bg-gradient-to-r from-foreground to-yellow-600 bg-clip-text text-transparent">
-						Browse by Category
-					</span>
+					Browse by Category
 				</h2>
 				<p className="text-muted-foreground">
 					Filter projects to find exactly what you&lsquo;re looking

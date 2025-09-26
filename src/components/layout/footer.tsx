@@ -131,12 +131,12 @@ export function Footer() {
 								href="/"
 								className="flex items-center space-x-2 mb-4">
 								<motion.div
-									className="h-8 w-8 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg"
+									className="h-8 w-8 rounded-lg flex items-center justify-center"
 									whileHover={{ rotate: 360, scale: 1.1 }}
 									transition={{ duration: 0.6 }}>
-									<Sparkles className="h-4 w-4 text-white" />
+									<Sparkles className="h-5 w-5 text-yellow-500" />
 								</motion.div>
-								<span className="text-lg font-bold">
+								<span className="text-lg font-bold  text-yellow-500">
 									{SITE_CONFIG.name}
 								</span>
 							</Link>

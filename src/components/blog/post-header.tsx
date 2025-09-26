@@ -65,7 +65,7 @@ export function PostHeader({ post }: PostHeaderProps) {
       {/* Cover Image */}
       {coverImage && (
         <motion.div
-          className="relative h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden shadow-xl shadow-yellow-500/10"
+          className="relative h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden shadow-sm"
           variants={ANIMATION_VARIANTS.scale}
           transition={{ delay: 0.2 }}
         >
@@ -104,7 +104,7 @@ export function PostHeader({ post }: PostHeaderProps) {
         transition={{ delay: 0.3 }}
       >
         {/* Title */}
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight bg-gradient-to-r from-foreground to-yellow-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight ">
           {post.title}
         </h1>
 

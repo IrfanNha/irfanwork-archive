@@ -133,9 +133,7 @@ export function GitHubRepos() {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}>
 				<h2 className="text-2xl md:text-3xl font-bold">
-					<span className="bg-gradient-to-r from-foreground to-yellow-600 bg-clip-text text-transparent">
-						GitHub Repositories
-					</span>
+					GitHub Repositories
 				</h2>
 				<div className="w-16 h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto rounded-full" />
 			</motion.div>

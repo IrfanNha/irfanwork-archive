@@ -111,11 +111,9 @@ export function HomeAbout() {
               </Badge>
 
               <h2 className="text-4xl md:text-5xl font-bold">
-                <span className="bg-gradient-to-r from-foreground to-yellow-600 bg-clip-text text-transparent">
-                  Crafting Digital
-                </span>
+                Crafting Digital
                 <br />
-                <span className="bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+                <span className="text-yellow-400">
                   Experiences
                 </span>
               </h2>

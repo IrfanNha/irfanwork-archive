@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Search, Filter, SortDesc } from 'lucide-react'
+import { Search, Filter, SortDesc, Pencil } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -79,28 +79,36 @@ const itemVariants = {
       animate="visible"
     >
       {/* Blog Header */}
-<motion.section
-  className="text-center space-y-8"
-  variants={containerVariants}
-  initial="hidden"
-  whileInView="visible"
-  viewport={{ once: true }}
->
-  {/* Main Title */}
-  <motion.div variants={itemVariants} className="space-y-4">
-    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-      <span className="bg-gradient-to-r from-foreground via-foreground to-yellow-600 bg-clip-text text-transparent">
-        Blog
-      </span>
-    </h1> 
-
+  <motion.section
+    className="text-center space-y-8 md:pt-16 md:pb-8"
+    variants={containerVariants}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true }}
+  >
     <motion.div
-      className="w-20 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto rounded-full"
-      initial={{ width: 0 }}
-      whileInView={{ width: 80 }}
-      viewport={{ once: true }}
-      transition={{ delay: 0.6, duration: 0.8 }}
-    />
+				variants={itemVariants}
+				className="flex justify-center">
+				<Badge
+					variant="outline"
+					className="border-yellow-500/30 text-yellow-600 bg-yellow-500/5 backdrop-blur-sm">
+					<Pencil className="w-3 h-3 mr-1" />
+					My Blog & Articles
+				</Badge>
+			</motion.div>
+    {/* Main Title */}
+    <motion.div variants={itemVariants} className="space-y-4">
+      <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+          Blog
+      </h1> 
+
+      <motion.div
+        className="w-20 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto rounded-full"
+        initial={{ width: 0 }}
+        whileInView={{ width: 80 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+      />
   </motion.div>
 
   {/* Subtitle */}

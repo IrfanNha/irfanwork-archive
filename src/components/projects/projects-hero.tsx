@@ -42,10 +42,8 @@ export function ProjectsHero() {
 
 			{/* Main Title */}
 			<motion.div variants={itemVariants} className="space-y-4">
-				<h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-					<span className="bg-gradient-to-r from-foreground via-foreground to-yellow-600 bg-clip-text text-transparent">
-						Creative
-					</span>
+				<h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">		
+					Creative
 					<br />
 					<span className="bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent flex items-center justify-center gap-3">
 						<Sparkles className="w-8 h-8 md:w-12 md:h-12 text-yellow-500" />

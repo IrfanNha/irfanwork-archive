@@ -34,11 +34,11 @@ export function HomeCoreInterests() {
 
 						{/* Title */}
 						<h2 className="text-4xl md:text-5xl font-bold">
-							<span className="bg-gradient-to-r from-foreground to-yellow-600 bg-clip-text text-transparent">
+							<span className="">
 								What I&lsquo;m
 							</span>
 							<br />
-							<span className="bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent">
+							<span className="text-yellow-400">
 								Passionate About
 							</span>
 						</h2>
