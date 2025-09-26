@@ -7,7 +7,7 @@ import { Container } from "@/components/ui/container"
 import { ProjectsHero } from "@/components/projects/projects-hero"
 import { ProjectsFilter } from "@/components/projects/projects-filter"
 import { ProjectsGrid } from "@/components/projects/projects-grid"
-import { BackgroundBlobs } from "@/components/projects/background-blobs"
+// import { BackgroundBlobs } from "@/components/projects/background-blobs"
 import { PROJECTS, type Project } from "@/constants/projects"
 
 
@@ -39,7 +39,7 @@ export default function ProjectsPage() {
   return (
     <main className="relative min-h-screen overflow-hidden">
       {/* Background Blobs */}
-      <BackgroundBlobs />
+      {/* <BackgroundBlobs /> */}
 
       {/* Content */}
       <Container className="relative z-10">
