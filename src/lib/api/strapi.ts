@@ -5,9 +5,12 @@ class StrapiAPI {
   private baseURL: string
 
   constructor() {
-  this.baseURL =
+  const configuredBaseUrl =
     process.env.NEXT_PUBLIC_STRAPI_URL ||
-    "https://cheerful-miracle-46ca92f071.strapiapp.com/";
+    "https://cheerful-miracle-46ca92f071.strapiapp.com";
+
+  // Normalize base URL by trimming trailing slashes to avoid `//api` which Strapi may reject
+  this.baseURL = configuredBaseUrl.replace(/\/+$/, "");
 
   if (!this.baseURL) {
     throw new Error("❌ NEXT_PUBLIC_STRAPI_URL is not set in .env.local and no fallback provided");
@@ -18,7 +21,8 @@ class StrapiAPI {
 
 
   private async request<T>(endpoint: string): Promise<T> {
-    const url = `${this.baseURL}/api${endpoint}`
+    const safeEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+    const url = `${this.baseURL}/api${safeEndpoint}`
     console.log('Requesting URL:', url) // Debug log
     
     try {
