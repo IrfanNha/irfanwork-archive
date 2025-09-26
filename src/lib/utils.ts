@@ -34,3 +34,28 @@ export function extractYear(date: string | Date): string {
 export function truncate(str: string, length: number): string {
   return str.length <= length ? str : str.slice(0, length) + '...'
 }
+
+// Add these functions to existing utils.ts
+
+export function getImageUrl(strapiUrl: string): string {
+  if (strapiUrl.startsWith('http')) {
+    return strapiUrl
+  }
+  return `${process.env.NEXT_PUBLIC_STRAPI_URL}${strapiUrl}`
+}
+
+export function stripHtmlTags(html: string): string {
+  return html.replace(/<[^>]*>/g, '')
+}
+
+export function createExcerpt(content: string, maxLength: number = 160): string {
+  const stripped = stripHtmlTags(content)
+  return stripped.length <= maxLength 
+    ? stripped 
+    : stripped.substring(0, maxLength).trim() + '...'
+}
+
+export function getStrapiImageUrl(image: any): string {
+  if (!image) return ''
+  return image.url || image.formats?.medium?.url || image.formats?.small?.url || ''
+}

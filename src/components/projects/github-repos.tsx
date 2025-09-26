@@ -161,12 +161,16 @@ export function GitHubRepos() {
 								whileHover={{ scale: 1.1, rotate: 2 }}
 								transition={{ type: "spring", stiffness: 200 }}
 								className="relative">
-								<div className="absolute inset-0 rounded-fullanimate-pulse" />
-								<Image
-									src={user.avatar_url}
-									alt={user.name}
-									className="relative w-28 h-28 rounded-full border-2 border-yellow-500/40"
-								/>
+								<div className="relative w-28 h-28 rounded-full border-2 border-yellow-500/40 overflow-hidden">
+									<Image
+										src={user.avatar_url}
+										alt={user.name}
+										fill
+										sizes="(max-width: 768px) 100vw, 200px"
+										className="object-cover"
+									/>
+								</div>
+
 							</motion.div>
 
 							{/* Name & Bio */}

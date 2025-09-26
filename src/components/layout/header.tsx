@@ -76,8 +76,8 @@ export function Header() {
 										duration: MOTION.SLOW,
 										ease: "easeInOut",
 									}}>
-									<div className="h-8 w-8 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg">
-										<Sparkles className="h-4 w-4 text-white" />
+									<div className="h-8 w-8 rounded-lg flex items-center justify-center">
+										<Sparkles className="h-6 w-6  text-yellow-500" />
 									</div>
 
 									{/* Glow effect */}
@@ -90,7 +90,7 @@ export function Header() {
 								</motion.div>
 
 								<motion.span
-									className="text-xl font-bold bg-gradient-to-r from-foreground to-yellow-600 bg-clip-text text-transparent group-hover:from-yellow-500 group-hover:to-yellow-600 transition-all duration-300"
+									className="text-xl font-bold text-yellow-500 group-hover:text-yellow-500 transition-all duration-300"
 									whileHover={{ scale: 1.05 }}
 									transition={{ duration: MOTION.FAST }}>
 									{SITE_CONFIG.name}

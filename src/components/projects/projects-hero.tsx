@@ -6,24 +6,31 @@ import { Badge } from "@/components/ui/badge";
 import { Code, Sparkles, Rocket } from "lucide-react";
 import { PROJECTS } from "@/constants/projects";
 
+// Variants reusable
+const containerVariants = {
+	hidden: { opacity: 0 },
+	visible: {
+		opacity: 1,
+		transition: { duration: 0.6, staggerChildren: 0.2 },
+	},
+};
+
+const itemVariants = {
+	hidden: { opacity: 0, y: 30 },
+	visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
+
 export function ProjectsHero() {
-	const [isVisible, setIsVisible] = React.useState(false);
-
-	React.useEffect(() => {
-		setIsVisible(true);
-	}, []);
-
 	return (
 		<motion.section
 			className="text-center space-y-8"
-			initial={{ opacity: 0 }}
-			animate={{ opacity: isVisible ? 1 : 0 }}
-			transition={{ duration: 0.6, staggerChildren: 0.2 }}>
+			variants={containerVariants}
+			initial="hidden"
+			whileInView="visible"
+			viewport={{ once: true }}>
 			{/* Badge */}
 			<motion.div
-				initial={{ opacity: 0, y: 30 }}
-				animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-				transition={{ duration: 0.6, delay: 0.1 }}
+				variants={itemVariants}
 				className="flex justify-center">
 				<Badge
 					variant="outline"
@@ -34,11 +41,7 @@ export function ProjectsHero() {
 			</motion.div>
 
 			{/* Main Title */}
-			<motion.div
-				initial={{ opacity: 0, y: 30 }}
-				animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-				transition={{ duration: 0.6, delay: 0.2 }}
-				className="space-y-4">
+			<motion.div variants={itemVariants} className="space-y-4">
 				<h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
 					<span className="bg-gradient-to-r from-foreground via-foreground to-yellow-600 bg-clip-text text-transparent">
 						Creative
@@ -53,16 +56,15 @@ export function ProjectsHero() {
 				<motion.div
 					className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto rounded-full"
 					initial={{ width: 0 }}
-					animate={{ width: isVisible ? 96 : 0 }}
+					whileInView={{ width: 96 }}
+					viewport={{ once: true }}
 					transition={{ delay: 0.8, duration: 0.8 }}
 				/>
 			</motion.div>
 
 			{/* Subtitle */}
 			<motion.p
-				initial={{ opacity: 0, y: 30 }}
-				animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-				transition={{ duration: 0.6, delay: 0.3 }}
+				variants={itemVariants}
 				className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
 				Explore my collection of projects, from web applications to
 				creative experiments. Each project represents a journey of{" "}
@@ -74,16 +76,10 @@ export function ProjectsHero() {
 
 			{/* Stats */}
 			<motion.div
-				initial={{ opacity: 0, y: 30 }}
-				animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 30 }}
-				transition={{ duration: 0.6, delay: 0.4 }}
+				variants={itemVariants}
 				className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
 				<div className="flex items-center gap-2">
-					<motion.div
-						className="w-2 h-2 rounded-full bg-green-500"
-						animate={{ scale: [1, 1.2, 1] }}
-						transition={{ duration: 2, repeat: Infinity }}
-					/>
+					<div className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
 					<span>{PROJECTS.length} Projects</span>
 				</div>
 				<div className="w-px h-4 bg-border" />
