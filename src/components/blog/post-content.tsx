@@ -5,7 +5,8 @@ import { motion } from 'framer-motion'
 import { Post, StrapiRichTextNode } from '@/types'
 import { ANIMATION_VARIANTS } from '@/constants'
 import Image from 'next/image'
-
+import { CodeBlock } from './code-block'
+import { ReactElement } from 'react'
 
 interface PostContentProps {
   post: Post
@@ -13,14 +14,74 @@ interface PostContentProps {
 
 export function PostContent({ post }: PostContentProps) {
   const renderContent = (content: StrapiRichTextNode[]) => {
-    return content.map((block, index) => {
+    const processedContent: ReactElement[] = []
+    let i = 0
+
+    while (i < content.length) {
+      const block = content[i]
+      
+
+      if (block.type === 'paragraph' && block.children?.[0]?.text?.startsWith('```')) {
+        const firstLine = block.children[0].text
+        const language = firstLine.replace('```', '').trim() || 'text'
+
+        const codeLines: string[] = []
+        let j = i + 1
+        let foundClosing = false
+        
+
+        const restOfFirstLine = firstLine.substring(firstLine.indexOf('```') + 3 + language.length).trim()
+        if (restOfFirstLine) {
+          codeLines.push(restOfFirstLine)
+        }
+        
+
+        while (j < content.length) {
+          const nextBlock = content[j]
+          if (nextBlock.type === 'paragraph' && nextBlock.children?.[0]?.text) {
+            const text = nextBlock.children[0].text
+            if (text.includes('```')) {
+              foundClosing = true
+
+              const beforeClosing = text.substring(0, text.indexOf('```')).trim()
+              if (beforeClosing) {
+                codeLines.push(beforeClosing)
+              }
+              break
+            } else {
+              codeLines.push(text)
+            }
+          } else {
+            break
+          }
+          j++
+        }
+        
+
+        if (codeLines.length > 0 || foundClosing) {
+          processedContent.push(
+            <CodeBlock 
+              key={`code-${i}`}
+              language={language}
+              allowCopy={true}
+              allowDownload={language === 'python'}
+              isExecutable={language === 'python'}
+              showLineNumbers={codeLines.length > 3}
+            >
+              {codeLines.join('\n')}
+            </CodeBlock>
+          )
+          i = j + 1 // Skip processed blocks
+          continue
+        }
+      }
+      
+      // Regular paragraph processing
       switch (block.type) {
         case 'paragraph':
-          return (
-            <p key={index} className="mb-4 leading-relaxed text-foreground">
+          processedContent.push(
+            <p key={`p-${i}`} className="mb-4 leading-relaxed text-foreground">
               {block.children?.map((child, childIndex) => {
-                
-                
                 if (child.bold && child.italic) {
                   return <strong key={childIndex}><em>{child.text}</em></strong>
                 }
@@ -37,11 +98,11 @@ export function PostContent({ post }: PostContentProps) {
               })}
             </p>
           )
+          break
         
         case 'heading':
           const level = (block as any).level || 2
           
-          // Type-safe heading rendering
           const renderHeading = () => {
             const headingContent = block.children?.map((child, childIndex) => (
               <span key={childIndex}>{child.text}</span>
@@ -67,7 +128,8 @@ export function PostContent({ post }: PostContentProps) {
             }
           }
           
-          return <div key={index}>{renderHeading()}</div>
+          processedContent.push(<div key={`h-${i}`}>{renderHeading()}</div>)
+          break
 
         case 'list':
           const isOrdered = (block as any).format === 'ordered'
@@ -85,31 +147,43 @@ export function PostContent({ post }: PostContentProps) {
             </li>
           ))
 
-          return isOrdered ? (
-            <ol key={index} className="mb-6 ml-6 list-decimal space-y-1">
-              {listItems}
-            </ol>
-          ) : (
-            <ul key={index} className="mb-6 ml-6 list-disc space-y-1">
-              {listItems}
-            </ul>
+          processedContent.push(
+            isOrdered ? (
+              <ol key={`ol-${i}`} className="mb-6 ml-6 list-decimal space-y-1">
+                {listItems}
+              </ol>
+            ) : (
+              <ul key={`ul-${i}`} className="mb-6 ml-6 list-disc space-y-1">
+                {listItems}
+              </ul>
+            )
           )
+          break
 
         case 'code':
-          return (
-            <pre key={index} className="bg-muted border border-border p-4 rounded-lg mb-6 overflow-x-auto">
-              <code className="text-sm font-mono text-foreground">
-                {block.children?.map((child, childIndex) => (
-                  <span key={childIndex}>{child.text}</span>
-                ))}
-              </code>
-            </pre>
+          const codeText = block.children?.map(child => child.text).join('') || ''
+          const codeLanguage = (block as any).language
+          const filename = (block as any).filename
+          
+          processedContent.push(
+            <CodeBlock 
+              key={`strapi-code-${i}`}
+              language={codeLanguage}
+              filename={filename}
+              allowCopy={true}
+              allowDownload={codeLanguage}
+              isExecutable={codeLanguage}
+              showLineNumbers={codeText.split('\n').length > 3}
+            >
+              {codeText}
+            </CodeBlock>
           )
+          break
 
         case 'quote':
         case 'blockquote':
-          return (
-            <blockquote key={index} className="border-l-4 border-yellow-500 pl-6 py-2 mb-6 italic text-muted-foreground bg-yellow-500/5 rounded-r-lg">
+          processedContent.push(
+            <blockquote key={`quote-${i}`} className="border-l-4 border-yellow-500 pl-6 py-2 mb-6 italic text-muted-foreground bg-yellow-500/5 rounded-r-lg">
               <div className="text-foreground/80">
                 {block.children?.map((child, childIndex) => (
                   <span key={childIndex}>{child.text}</span>
@@ -117,11 +191,12 @@ export function PostContent({ post }: PostContentProps) {
               </div>
             </blockquote>
           )
+          break
 
         case 'link':
-          return (
+          processedContent.push(
             <a 
-              key={index} 
+              key={`link-${i}`}
               href={(block as any).url}
               className="text-yellow-600 hover:text-yellow-700 underline underline-offset-2 hover:underline-offset-4 transition-all"
               target={(block as any).target || '_self'}
@@ -132,31 +207,32 @@ export function PostContent({ post }: PostContentProps) {
               ))}
             </a>
           )
+          break
 
         case 'image':
           const imageData = block as any
-          return (
-            <figure key={index} className="mb-6">
-            <Image
+          processedContent.push(
+            <figure key={`img-${i}`} className="mb-6">
+              <Image
                 src={imageData.image?.url || imageData.url}
                 alt={imageData.image?.alternativeText || imageData.alt || ''}
                 width={800}
                 height={500}
                 className="w-full h-auto rounded-lg"
-            />
-            {imageData.image?.caption && (
+              />
+              {imageData.image?.caption && (
                 <figcaption className="text-sm text-muted-foreground text-center mt-2 italic">
-                {imageData.image.caption}
+                  {imageData.image.caption}
                 </figcaption>
-            )}
+              )}
             </figure>
-
           )
+          break
 
         default:
           if (block.children && Array.isArray(block.children)) {
-            return (
-              <div key={index} className="mb-4 text-foreground">
+            processedContent.push(
+              <div key={`default-${i}`} className="mb-4 text-foreground">
                 {block.children.map((child, childIndex) => {
                   if (typeof child === 'object' && child.text) {
                     if (child.bold) {
@@ -171,20 +247,25 @@ export function PostContent({ post }: PostContentProps) {
                 })}
               </div>
             )
+          } else {
+            processedContent.push(
+              <div key={`unsupported-${i}`} className="my-4 p-3 bg-muted rounded-lg border-l-4 border-yellow-500">
+                <p className="text-sm text-muted-foreground">
+                  Unsupported content type: {block.type}
+                </p>
+                <pre className="text-xs mt-2 text-muted-foreground overflow-x-auto">
+                  {JSON.stringify(block, null, 2)}
+                </pre>
+              </div>
+            )
           }
-          
-          return (
-            <div key={index} className="my-4 p-3 bg-muted rounded-lg border-l-4 border-yellow-500">
-              <p className="text-sm text-muted-foreground">
-                Unsupported content type: {block.type}
-              </p>
-              <pre className="text-xs mt-2 text-muted-foreground overflow-x-auto">
-                {JSON.stringify(block, null, 2)}
-              </pre>
-            </div>
-          )
+          break
       }
-    })
+      
+      i++
+    }
+    
+    return processedContent
   }
 
   return (

@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+
 import { notFound } from 'next/navigation'
 import { PostContent } from '@/components/blog/post-content'
 import { PostHeader } from '@/components/blog/post-header'

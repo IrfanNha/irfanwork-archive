@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Code, Sparkles, Zap, Star } from "lucide-react";
+import { Code, Sparkles, Zap} from "lucide-react";
 
 export default function SplashScreen() {
   const [progress, setProgress] = useState(0);
@@ -19,13 +19,13 @@ export default function SplashScreen() {
   const rotateX = useTransform(springY, [-300, 300], [15, -15]);
   const rotateY = useTransform(springX, [-300, 300], [-15, 15]);
 
-  const loadingMessages = [
+  const loadingMessages = useMemo(() => [
     "Initializing...",
     "Loading assets...",
     "Preparing experience...",
     "Almost ready...",
     "Welcome!"
-  ];
+  ], []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -174,7 +174,7 @@ export default function SplashScreen() {
           />
           
           <motion.h1
-            className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-600 bg-clip-text text-transparent relative z-10"
+            className="text-4xl md:text-8xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-600 bg-clip-text text-transparent relative z-10"
             animate={{
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
             }}
