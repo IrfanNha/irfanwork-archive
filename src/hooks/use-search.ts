@@ -30,8 +30,8 @@ export function useSearch(options: UseSearchOptions = {}) {
   const [results, setResults] = useState<SearchResult[]>([])
   const [error, setError] = useState<string | null>(null)
   
-  const debounceRef = useRef<NodeJS.Timeout>()
-  const abortControllerRef = useRef<AbortController>()
+  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const performSearch = useCallback(async (query: string): Promise<SearchResult[]> => {
     if (!query.trim() || query.trim().length < minQueryLength) {
