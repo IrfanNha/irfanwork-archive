@@ -10,8 +10,18 @@ interface RelatedPostsProps {
   currentPost: Post
 }
 
-export function RelatedPosts({ posts }: RelatedPostsProps) {
+export function RelatedPosts({ posts, currentPost }: RelatedPostsProps) {
   if (posts.length === 0) return null
+
+  // Filter out current post and ensure we have valid posts
+  const validPosts = posts.filter(post => 
+    post && 
+    post.id !== currentPost.id && 
+    post.title && 
+    post.slug
+  )
+
+  if (validPosts.length === 0) return null
 
   return (
     <motion.section
@@ -31,9 +41,9 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
         className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
         variants={ANIMATION_VARIANTS.stagger}
       >
-        {posts.map((post, index) => (
+        {validPosts.map((post, index) => (
           <motion.div
-            key={post.documentId}
+            key={post.id || post.documentId || index}
             variants={ANIMATION_VARIANTS.slideUp}
             transition={{ delay: index * 0.1 }}
           >

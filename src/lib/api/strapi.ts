@@ -30,7 +30,7 @@ class StrapiAPI {
         headers: {
           'Content-Type': 'application/json',
         },
-        next: { revalidate: 300 }, // Revalidate every 5 minutes (only works in RSC)
+        next: { revalidate: 60 }, // Revalidate every 60 seconds
       })
 
       console.log('Response status:', response.status) // Debug log
@@ -109,9 +109,11 @@ class StrapiAPI {
  async getPostBySlug(slug: string): Promise<Post | null> {
   const params = new URLSearchParams()
   params.append('filters[slug][$eq]', slug)
-  params.append('populate', 'coverImage')
-  params.append('populate', 'categories')
-  params.append('populate', 'tags')
+  
+  // Use same populate format as getPosts for consistency
+  params.append('populate[coverImage]', 'true')
+  params.append('populate[categories]', 'true')
+  params.append('populate[tags]', 'true')
   
   const endpoint = `/posts?${params.toString()}`
   console.log('Single post endpoint:', endpoint)
@@ -152,8 +154,11 @@ class StrapiAPI {
   async getFeaturedPosts(limit: number = 3): Promise<StrapiResponse<Post>> {
     const params = new URLSearchParams()
     params.append('pagination[pageSize]', limit.toString())
-    params.append('populate[coverImage]', '*')
-    params.append('populate[categories]', '*')
+    
+    // Use same populate format as getPosts for consistency
+    params.append('populate[coverImage]', 'true')
+    params.append('populate[categories]', 'true')
+    params.append('populate[tags]', 'true')
     params.append('sort', 'publishedAt:desc')
     
     const endpoint = `/posts?${params.toString()}`
@@ -168,15 +173,18 @@ class StrapiAPI {
     params.append('filters[categories][slug][$eq]', categorySlug)
     params.append('filters[id][$ne]', currentPostId.toString())
     params.append('pagination[pageSize]', limit.toString())
-    params.append('populate', 'coverImage')
-    params.append('populate', 'categories')
+    
+    // Use same populate format as getPosts for consistency
+    params.append('populate[coverImage]', 'true')
+    params.append('populate[categories]', 'true')
+    params.append('populate[tags]', 'true')
     params.append('sort', 'publishedAt:desc')
     
     const endpoint = `/posts?${params.toString()}`
     console.log('Related posts endpoint:', endpoint)
     
     return this.request<StrapiResponse<Post>>(endpoint)
-}
+  }
 
 
   // Simple test method to check API connectivity

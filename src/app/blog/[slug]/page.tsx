@@ -14,6 +14,8 @@ interface PostPageProps {
   }>
 }
 
+// Enable ISR for individual blog posts
+export const revalidate = 60 // Revalidate every 60 seconds
 
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params
@@ -26,12 +28,40 @@ export default async function PostPage({ params }: PostPageProps) {
   // Get related posts if post has categories
   let relatedPosts: Post[] = []
   if (post.categories && post.categories.length > 0) {
-    const relatedResponse = await strapiAPI.getRelatedPosts(
-      post.categories[0].slug,
-      post.id,
-      3
-    )
-    relatedPosts = relatedResponse.data
+    console.log('Fetching related posts for category:', post.categories[0].slug)
+    console.log('Current post ID:', post.id)
+    
+    try {
+      const relatedResponse = await strapiAPI.getRelatedPosts(
+        post.categories[0].slug,
+        post.id,
+        3
+      )
+      
+      console.log('Related posts response:', relatedResponse)
+      relatedPosts = relatedResponse.data || []
+      
+      console.log('Related posts data:', relatedPosts)
+      
+      // If no related posts found, try to get recent posts instead
+      if (relatedPosts.length === 0) {
+        console.log('No related posts found, fetching recent posts...')
+        const recentResponse = await strapiAPI.getPosts({ pageSize: 3 })
+        relatedPosts = recentResponse.data.filter(p => p.id !== post.id).slice(0, 3)
+        console.log('Recent posts as fallback:', relatedPosts)
+      }
+    } catch (error) {
+      console.error('Error fetching related posts:', error)
+      // Fallback to recent posts
+      try {
+        const recentResponse = await strapiAPI.getPosts({ pageSize: 3 })
+        relatedPosts = recentResponse.data.filter(p => p.id !== post.id).slice(0, 3)
+        console.log('Fallback recent posts:', relatedPosts)
+      } catch (fallbackError) {
+        console.error('Error fetching fallback posts:', fallbackError)
+        relatedPosts = []
+      }
+    }
   }
 
   return (

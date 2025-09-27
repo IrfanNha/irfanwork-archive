@@ -16,8 +16,14 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
-  const coverImage = post.coverImage?.[0]
-  const category = post.categories?.[0]
+  // Handle different data structures from Strapi
+  const coverImage = Array.isArray(post.coverImage) 
+    ? post.coverImage[0] 
+    : post.coverImage?.data?.[0] || post.coverImage
+  
+  const category = Array.isArray(post.categories) 
+    ? post.categories[0] 
+    : post.categories?.data?.[0] || post.categories?.[0]
   
   // Calculate reading time from content
   const contentText = post.content
@@ -87,13 +93,13 @@ export function PostCard({ post }: PostCardProps) {
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-4">
-              {post.tags.slice(0, 3).map((tag) => (
+              {post.tags.slice(0, 3).map((tag, index) => (
                 <Badge
-                  key={tag.documentId}
+                  key={tag?.documentId || tag?.id || index}
                   variant="outline"
                   className="text-xs border-yellow-500/30 text-muted-foreground hover:bg-yellow-500/10"
                 >
-                  {tag.name}
+                  {tag?.name || tag?.attributes?.name}
                 </Badge>
               ))}
               {post.tags.length > 3 && (

@@ -26,6 +26,9 @@ interface BlogPageProps {
   }
 }
 
+// Enable ISR for this page
+export const revalidate = 60 // Revalidate every 60 seconds
+
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const sp = searchParams ?? {}
 

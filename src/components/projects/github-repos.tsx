@@ -49,15 +49,26 @@ interface GitHubUser {
 	avatar_url: string;
 }
 
-export function GitHubRepos() {
-	const [repos, setRepos] = React.useState<GitHubRepo[]>([]);
-	const [user, setUser] = React.useState<GitHubUser | null>(null);
-	const [loading, setLoading] = React.useState(true);
+interface GitHubReposProps {
+	initialUser?: GitHubUser;
+	initialRepos?: GitHubRepo[];
+}
+
+export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
+	const [repos, setRepos] = React.useState<GitHubRepo[]>(initialRepos || []);
+	const [user, setUser] = React.useState<GitHubUser | null>(initialUser || null);
+	const [loading, setLoading] = React.useState(!initialUser || !initialRepos);
 	const [error, setError] = React.useState<string | null>(null);
 
 	const username = "IrfanNha";
 
 	React.useEffect(() => {
+		// Only fetch if we don't have initial data
+		if (initialUser && initialRepos) {
+			setLoading(false);
+			return;
+		}
+
 		const fetchGitHubData = async () => {
 			try {
 				setLoading(true);
@@ -89,7 +100,7 @@ export function GitHubRepos() {
 		};
 
 		fetchGitHubData();
-	}, []);
+	}, [initialUser, initialRepos]);
 
 	if (loading) {
 		return (

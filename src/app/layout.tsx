@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { SearchProvider } from "@/contexts/search-context";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import SplashScreen from "@/components/layout/splash-screen";
+import { SearchModal } from "@/components/search/search-modal";
+import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ["latin"] });
@@ -94,12 +97,16 @@ export default function RootLayout({
 					defaultTheme="dark"
 					enableSystem
 					disableTransitionOnChange>
-					<SplashScreen />
-					<div className="relative flex min-h-screen flex-col">
-						<Header />
-						<main className="flex-1">{children}</main>
-						<Footer />
-					</div>
+					<SearchProvider>
+						<KeyboardShortcuts />
+						<SplashScreen />
+						<div className="relative flex min-h-screen flex-col">
+							<Header />
+							<main className="flex-1">{children}</main>
+							<Footer />
+						</div>
+						<SearchModal />
+					</SearchProvider>
 				</ThemeProvider>
 			</body>
 		</html>

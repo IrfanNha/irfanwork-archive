@@ -24,11 +24,11 @@ import {
 } from "@/constants/index";
 import { cn } from "@/lib/utils";
 import { Container } from "../ui/container";
+import { useSearch } from "@/contexts/search-context";
 
 export function Header() {
 	const pathname = usePathname();
-	const [isSearchOpen, setIsSearchOpen] = React.useState(false);
-	const [searchQuery, setSearchQuery] = React.useState("");
+	const { openSearch } = useSearch();
 	const [isScrolled, setIsScrolled] = React.useState(false);
 
 	// Handle scroll effect
@@ -176,16 +176,22 @@ export function Header() {
 							{/* Search Toggle */}
 							<motion.div
 								whileHover={{ scale: 1.05 }}
-								whileTap={{ scale: 0.95 }}>
+								whileTap={{ scale: 0.95 }}
+								className="relative group">
 								<Button
 									variant="ghost"
 									size="sm"
 									className="h-8 w-8 px-0 hover:bg-yellow-500/10 hover:text-yellow-600 border border-transparent hover:border-yellow-500/20"
-									onClick={() =>
-										setIsSearchOpen(!isSearchOpen)
-									}>
+									onClick={openSearch}>
 									<Search className="h-4 w-4" />
 								</Button>
+								
+								{/* Keyboard shortcut indicator */}
+								<div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+									<div className="bg-foreground text-background text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
+										Press <kbd className="px-1 py-0.5 bg-background/20 rounded text-xs">⌘K</kbd> to search
+									</div>
+								</div>
 							</motion.div>
 
 							{/* Theme Dropdown */}
@@ -295,37 +301,6 @@ export function Header() {
 					</div>
 				</div>
 
-				{/* Search Bar */}
-				<AnimatePresence>
-					{isSearchOpen && (
-						<motion.div
-							className="border-t border-yellow-500/20 bg-background/80 backdrop-blur-md"
-							initial={{ height: 0, opacity: 0 }}
-							animate={{ height: "auto", opacity: 1 }}
-							exit={{ height: 0, opacity: 0 }}
-							transition={{ duration: MOTION.MEDIUM }}>
-							<div className="container py-4">
-								<motion.div
-									className="relative max-w-md mx-auto"
-									initial={{ scale: 0.95, opacity: 0 }}
-									animate={{ scale: 1, opacity: 1 }}
-									transition={{ delay: 0.1 }}>
-									<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-									<Input
-										type="text"
-										placeholder="Search articles..."
-										value={searchQuery}
-										onChange={(e) =>
-											setSearchQuery(e.target.value)
-										}
-										className="pl-10 border-yellow-500/20 focus:border-yellow-500/40 focus:ring-yellow-500/20"
-										autoFocus
-									/>
-								</motion.div>
-							</div>
-						</motion.div>
-					)}
-				</AnimatePresence>
 			</Container>
 		</motion.header>
 	);
