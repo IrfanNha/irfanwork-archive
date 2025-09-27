@@ -51,7 +51,7 @@ export function HomeHero() {
 			className="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
 			<Container>
 				{/* Floating decorative elements */}
-				<motion.div
+				{/* <motion.div
 					className="absolute top-20 left-20 w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400/30 to-orange-500/30 blur-xl"
 					animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.2, 1] }}
 					transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -65,7 +65,7 @@ export function HomeHero() {
 						ease: "easeInOut",
 						delay: 2,
 					}}
-				/>
+				/> */}
 
 				<div className="container mx-auto relative z-10">
 					<div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
