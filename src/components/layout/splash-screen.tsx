@@ -174,7 +174,7 @@ export default function SplashScreen() {
           />
           
           <motion.h1
-            className="text-4xl md:text-8xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-600 bg-clip-text text-transparent relative z-10"
+            className="text-5xl md:text-8xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-600 bg-clip-text text-transparent relative z-10"
             animate={{
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
             }}
