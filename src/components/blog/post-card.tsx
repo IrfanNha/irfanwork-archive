@@ -16,16 +16,15 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
-  // Handle different data structures from Strapi
   const coverImage = Array.isArray(post.coverImage) 
     ? post.coverImage[0] 
-    : post.coverImage?.data?.[0] || post.coverImage
+    : (post.coverImage as any)?.data?.[0] || post.coverImage
   
   const category = Array.isArray(post.categories) 
     ? post.categories[0] 
-    : post.categories?.data?.[0] || post.categories?.[0]
+    : (post.categories as any)?.data?.[0] || post.categories?.[0]
   
-  // Calculate reading time from content
+
   const contentText = post.content
     ?.map(block => block.children?.map(child => child.text).join(' '))
     .join(' ') || ''
@@ -99,7 +98,7 @@ export function PostCard({ post }: PostCardProps) {
                   variant="outline"
                   className="text-xs border-yellow-500/30 text-muted-foreground hover:bg-yellow-500/10"
                 >
-                  {tag?.name || tag?.attributes?.name}
+                  {tag?.name }
                 </Badge>
               ))}
               {post.tags.length > 3 && (
