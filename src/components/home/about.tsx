@@ -22,13 +22,6 @@ export function HomeAbout() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { theme } = useTheme();
 
-  const [mounted, setMounted] = React.useState(false);
-
-  // Prevent hydration mismatch
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const drives = React.useMemo(
     () => [
       "Philosophy",
@@ -39,9 +32,7 @@ export function HomeAbout() {
     ],
     []
   );
-  if (!mounted) {
-    return null;
-  }
+
   return (
     <motion.section ref={ref} className="relative py-24">
       <Container>
