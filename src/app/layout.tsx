@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Poppins, Montserrat } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SearchProvider } from "@/contexts/search-context";
@@ -10,7 +10,25 @@ import { SearchModal } from "@/components/search/search-modal";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { Analytics } from "@vercel/analytics/next"
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+	subsets: ["latin"],
+	variable: "--font-inter",
+	display: "swap",
+});
+
+const poppins = Poppins({ 
+	subsets: ["latin"],
+	weight: ["400", "500", "600", "700", "800", "900"],
+	variable: "--font-poppins",
+	display: "swap",
+});
+
+const montserrat = Montserrat({ 
+	subsets: ["latin"],
+	weight: ["400", "500", "600", "700", "800", "900"],
+	variable: "--font-montserrat",
+	display: "swap",
+});
 
 export const metadata: Metadata = {
 	title: {
@@ -90,7 +108,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={inter.className}>
+			<body className={`${inter.variable} ${poppins.variable} ${montserrat.variable} ${inter.className}`}>
 				<Analytics />
 				<ThemeProvider
 					attribute="class"

@@ -22,14 +22,14 @@ export function EmptyState({ filters }: EmptyStateProps) {
       animate="visible"
     >
       <motion.div
-        className="h-24 w-24 rounded-full bg-yellow-500/10 flex items-center justify-center"
+        className="h-24 w-24 rounded-full bg-muted flex items-center justify-center"
         variants={ANIMATION_VARIANTS.scale}
         transition={{ delay: 0.2 }}
       >
         {hasFilters ? (
-          <Search className="h-12 w-12 text-yellow-500" />
+          <Search className="h-12 w-12 text-muted-foreground" />
         ) : (
-          <FileText className="h-12 w-12 text-yellow-500" />
+          <FileText className="h-12 w-12 text-muted-foreground" />
         )}
       </motion.div>
 
@@ -56,20 +56,20 @@ export function EmptyState({ filters }: EmptyStateProps) {
       >
         {hasFilters ? (
           <>
-            <Button asChild variant="outline" className="hover:bg-yellow-500/10">
+            <Button asChild variant="outline" className="hover:bg-muted">
               <Link href="/blog">
                 <Filter className="h-4 w-4 mr-2" />
                 Clear All Filters
               </Link>
             </Button>
-            <Button asChild className="bg-yellow-500 hover:bg-yellow-600 text-black">
+            <Button asChild>
               <Link href="/blog">
                 Browse All Articles
               </Link>
             </Button>
           </>
         ) : (
-          <Button asChild className="bg-yellow-500 hover:bg-yellow-600 text-black">
+          <Button asChild>
             <Link href="/">
               <FileText className="h-4 w-4 mr-2" />
               Back to Home

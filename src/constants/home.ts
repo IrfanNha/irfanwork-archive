@@ -1,10 +1,11 @@
 // Home page constants with type safety
+import { Brain, Code2, Users, LucideIcon } from "lucide-react";
 
 export interface CoreInterest {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
   color: string;
   skills: string[];
 }
@@ -26,6 +27,16 @@ export interface Quote {
   category: "philosophy" | "technology" | "life";
 }
 
+export interface ContactInfo {
+  phone: string;
+  phoneDisplay: string;
+  address: string;
+  workingHours: {
+    weekdays: string;
+    weekend: string;
+  };
+}
+
 export interface PersonalInfo {
   name: string;
   title: string;
@@ -40,6 +51,7 @@ export interface PersonalInfo {
     twitter?: string;
     instagram?: string;
   };
+  contact: ContactInfo;
 }
 
 // Personal Information
@@ -56,6 +68,15 @@ export const PERSONAL_INFO: PersonalInfo = {
     linkedin: "https://linkedin.com/in/irfan-nuha",
     twitter: "https://twitter.com",
     instagram: "https://instagram.com/irrfnnh"
+  },
+  contact: {
+    phone: "+6281234567890",
+    phoneDisplay: "+62 812-3456-7890",
+    address: "Jl. Example Street No. 123, Semarang, Central Java 50123",
+    workingHours: {
+      weekdays: "Mon - Fri: 9:00 - 18:00",
+      weekend: "Closed"
+    }
   }
 };
 
@@ -65,7 +86,7 @@ export const CORE_INTERESTS: CoreInterest[] = [
     id: "philosophy",
     title: "Philosophy",
     description: "Exploring the fundamental questions of existence, ethics, and human nature. I find that philosophical thinking enhances both life and code quality.",
-    icon: "🤔",
+    icon: Brain,
     color: "from-purple-400 to-purple-600",
     skills: ["Critical Thinking", "Ethics", "Logic", "Epistemology", "Existentialism"]
   },
@@ -73,7 +94,7 @@ export const CORE_INTERESTS: CoreInterest[] = [
     id: "programming",
     title: "Programming",
     description: "Building scalable, maintainable software solutions with modern technologies. Always learning and adapting to new paradigms and best practices.",
-    icon: "💻",
+    icon: Code2,
     color: "from-blue-400 to-blue-600", 
     skills: ["Full Stack Development", "System Design", "Clean Architecture", "DevOps", "Open Source"]
   },
@@ -81,7 +102,7 @@ export const CORE_INTERESTS: CoreInterest[] = [
     id: "social-science",
     title: "Social Science",
     description: "Understanding human behavior, society, and culture to build technology that truly serves people and communities effectively.",
-    icon: "🌍",
+    icon: Users,
     color: "from-green-400 to-green-600",
     skills: ["Human Psychology", "UX Research", "Community Building", "Digital Sociology", "Cultural Studies"]
   }

@@ -1,30 +1,31 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Calendar, Clock, ArrowLeft, Share2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { formatDate, readingTime } from '@/lib/utils'
-import { ANIMATION_VARIANTS } from '@/constants'
-import { Post } from '@/types'
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { Calendar, Clock, ArrowLeft, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { formatDate, readingTime } from "@/lib/utils";
+import { ANIMATION_VARIANTS } from "@/constants";
+import { Post } from "@/types";
 
 interface PostHeaderProps {
-  post: Post
+  post: Post;
 }
 
 export function PostHeader({ post }: PostHeaderProps) {
-  const coverImage = post.coverImage?.[0]
-  const category = post.categories?.[0]
-  
+  const coverImage = post.coverImage?.[0];
+  const category = post.categories?.[0];
+
   // Calculate reading time from content
-  const contentText = post.content
-    ?.map(block => block.children?.map(child => child.text).join(' '))
-    .join(' ') || ''
-  
-  const estimatedReadingTime = readingTime(contentText + (post.excerpt || ''))
+  const contentText =
+    post.content
+      ?.map((block) => block.children?.map((child) => child.text).join(" "))
+      .join(" ") || "";
+
+  const estimatedReadingTime = readingTime(contentText + (post.excerpt || ""));
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -33,17 +34,17 @@ export function PostHeader({ post }: PostHeaderProps) {
           title: post.title,
           text: post.excerpt,
           url: window.location.href,
-        })
+        });
       } catch (error) {
         // Fallback to copying URL
-        navigator.clipboard.writeText(window.location.href)
-        console.error('Error sharing:', error)
+        navigator.clipboard.writeText(window.location.href);
+        console.error("Error sharing:", error);
       }
     } else {
       // Fallback to copying URL
-      navigator.clipboard.writeText(window.location.href)
+      navigator.clipboard.writeText(window.location.href);
     }
-  }
+  };
 
   return (
     <motion.article
@@ -77,10 +78,10 @@ export function PostHeader({ post }: PostHeaderProps) {
             priority
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           />
-          
+
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-          
+
           {/* Category Badge */}
           {category && (
             <motion.div
@@ -89,7 +90,7 @@ export function PostHeader({ post }: PostHeaderProps) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <Badge className="bg-yellow-500 hover:bg-yellow-600 text-black font-medium shadow-lg text-sm px-3 py-1">
+              <Badge className="bg-foreground text-background font-medium text-sm px-3 py-1">
                 {category.name}
               </Badge>
             </motion.div>
@@ -123,7 +124,7 @@ export function PostHeader({ post }: PostHeaderProps) {
               {formatDate(post.publishedAt)}
             </time>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             <span>{estimatedReadingTime} min read</span>
@@ -133,7 +134,7 @@ export function PostHeader({ post }: PostHeaderProps) {
             variant="ghost"
             size="sm"
             onClick={handleShare}
-            className="hover:bg-yellow-500/10"
+            className="hover:bg-muted"
           >
             <Share2 className="h-4 w-4 mr-2" />
             Share
@@ -147,7 +148,7 @@ export function PostHeader({ post }: PostHeaderProps) {
               <Badge
                 key={tag.documentId}
                 variant="outline"
-                className="border-yellow-500/30 text-muted-foreground hover:bg-yellow-500/10"
+                className="border-border text-muted-foreground hover:bg-muted"
               >
                 #{tag.name}
               </Badge>
@@ -155,8 +156,8 @@ export function PostHeader({ post }: PostHeaderProps) {
           </div>
         )}
 
-        <Separator className="bg-yellow-500/20" />
+        <Separator className="bg-border" />
       </motion.div>
     </motion.article>
-  )
+  );
 }

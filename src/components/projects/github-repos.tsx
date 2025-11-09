@@ -105,7 +105,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 	if (loading) {
 		return (
 			<div className="flex flex-col items-center justify-center py-16 space-y-4">
-				<Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
+				<Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
 				<p className="text-muted-foreground">
 					Loading repositories from GitHub...
 				</p>
@@ -116,8 +116,8 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 	if (error) {
 		return (
 			<div className="flex flex-col items-center justify-center py-16 space-y-4">
-				<div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center">
-					<AlertCircle className="w-8 h-8 text-red-500" />
+				<div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+					<AlertCircle className="w-8 h-8 text-muted-foreground" />
 				</div>
 				<h3 className="text-lg font-semibold">
 					Failed to load repositories
@@ -128,7 +128,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 				<Button
 					onClick={() => window.location.reload()}
 					variant="outline"
-					className="border-yellow-500/20 hover:border-yellow-500/40">
+					className="border-border hover:bg-muted">
 					Try Again
 				</Button>
 			</div>
@@ -146,7 +146,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 				<h2 className="text-2xl md:text-3xl font-bold">
 					GitHub Repositories
 				</h2>
-				<div className="w-16 h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto rounded-full" />
+				<div className="w-16 h-[1px] bg-foreground mx-auto" />
 			</motion.div>
 
 			<motion.div
@@ -170,7 +170,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 								whileHover={{ scale: 1.1, rotate: 2 }}
 								transition={{ type: "spring", stiffness: 200 }}
 								className="relative">
-								<div className="relative w-28 h-28 rounded-full border-2 border-yellow-500/40 overflow-hidden">
+								<div className="relative w-28 h-28 rounded-full border-2 border-border overflow-hidden">
 									<Image
 										src={user.avatar_url}
 										alt={user.name}
@@ -185,8 +185,8 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 							{/* Name & Bio */}
 							<div className="text-center space-y-2">
 								<h3 className="text-2xl font-bold flex items-center justify-center gap-2">
-									<Github className="w-6 h-6 text-yellow-600" />
-									<span className="bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent">
+									<Github className="w-6 h-6 text-foreground" />
+									<span className="text-foreground">
 										{user.name || user.login}
 									</span>
 								</h3>
@@ -227,7 +227,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 						<TableBody>
 							<TableRow>
 								<TableCell>
-									<Code className="w-4 h-4 text-yellow-600" />
+									<Code className="w-4 h-4 text-foreground" />
 								</TableCell>
 								<TableCell>Repositories</TableCell>
 								<TableCell className="text-right font-semibold">
@@ -236,7 +236,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 							</TableRow>
 							<TableRow>
 								<TableCell>
-									<Star className="w-4 h-4 text-yellow-600" />
+									<Star className="w-4 h-4 text-foreground" />
 								</TableCell>
 								<TableCell>Total Stars</TableCell>
 								<TableCell className="text-right font-semibold">
@@ -248,7 +248,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 							</TableRow>
 							<TableRow>
 								<TableCell>
-									<GitFork className="w-4 h-4 text-yellow-600" />
+									<GitFork className="w-4 h-4 text-foreground" />
 								</TableCell>
 								<TableCell>Total Forks</TableCell>
 								<TableCell className="text-right font-semibold">
@@ -260,7 +260,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 							</TableRow>
 							<TableRow>
 								<TableCell>
-									<Github className="w-4 h-4 text-yellow-600" />
+									<Github className="w-4 h-4 text-foreground" />
 								</TableCell>
 								<TableCell>Followers</TableCell>
 								<TableCell className="text-right font-semibold">
@@ -269,7 +269,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 							</TableRow>
 							<TableRow>
 								<TableCell>
-									<Github className="w-4 h-4 text-yellow-600" />
+									<Github className="w-4 h-4 text-foreground" />
 								</TableCell>
 								<TableCell>Following</TableCell>
 								<TableCell className="text-right font-semibold">
@@ -278,7 +278,7 @@ export function GitHubRepos({ initialUser, initialRepos }: GitHubReposProps) {
 							</TableRow>
 							<TableRow>
 								<TableCell>
-									<Calendar className="w-4 h-4 text-yellow-600" />
+									<Calendar className="w-4 h-4 text-foreground" />
 								</TableCell>
 								<TableCell>Last Activity</TableCell>
 								<TableCell className="text-right font-semibold">

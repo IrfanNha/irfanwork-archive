@@ -15,10 +15,10 @@ export function PostNavigation() {
       initial="hidden"
       animate="visible"
     >
-      <Separator className="bg-yellow-500/20" />
+      <Separator className="bg-border" />
       
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <Button variant="outline" asChild className="hover:bg-yellow-500/10">
+        <Button variant="outline" asChild className="hover:bg-muted">
           <Link href="/blog" className="group">
             <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
             Back to Blog

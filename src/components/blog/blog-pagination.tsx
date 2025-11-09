@@ -73,7 +73,7 @@ export function BlogPagination({ pagination }: BlogPaginationProps) {
         size="sm"
         asChild={page > 1}
         disabled={page <= 1}
-        className="hover:bg-yellow-500/10 hover:border-yellow-500/40"
+        className="hover:bg-muted"
       >
         {page > 1 ? (
           <Link href={createPageLink(page - 1)}>
@@ -102,11 +102,7 @@ export function BlogPagination({ pagination }: BlogPaginationProps) {
                 size="sm"
                 asChild={pageNum !== page}
                 disabled={pageNum === page}
-                className={
-                  pageNum === page
-                    ? "bg-yellow-500 hover:bg-yellow-600 text-black"
-                    : "hover:bg-yellow-500/10 hover:border-yellow-500/40"
-                }
+                className="hover:bg-muted"
               >
                 {pageNum !== page ? (
                   <Link href={createPageLink(pageNum as number)}>
@@ -127,7 +123,7 @@ export function BlogPagination({ pagination }: BlogPaginationProps) {
         size="sm"
         asChild={page < pageCount}
         disabled={page >= pageCount}
-        className="hover:bg-yellow-500/10 hover:border-yellow-500/40"
+        className="hover:bg-muted"
       >
         {page < pageCount ? (
           <Link href={createPageLink(page + 1)}>

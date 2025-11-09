@@ -3,11 +3,8 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Tag, Folder, TrendingUp } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tag, Folder } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { Category, Tag as TagType, BlogFilters } from '@/types'
 import { ANIMATION_VARIANTS } from '@/constants'
 import { cn } from '@/lib/utils'
@@ -43,125 +40,62 @@ export function BlogSidebar({ categories, tags, currentFilters }: BlogSidebarPro
     >
       {/* Categories */}
       <motion.div variants={ANIMATION_VARIANTS.slideUp}>
-        <Card className="border-yellow-500/20 shadow-lg shadow-yellow-500/5">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Folder className="h-5 w-5 text-yellow-500" />
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Folder className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               Categories
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
+            </h3>
+          </div>
+          <div className="space-y-1">
             {categories.map((category) => (
               <Link
                 key={category.documentId}
                 href={createFilterLink('category', category.slug)}
                 className={cn(
-                  "block p-2 rounded-md text-sm transition-colors hover:bg-yellow-500/10",
+                  "block py-2 text-sm transition-colors border-l-2 pl-3",
                   currentFilters.category === category.slug
-                    ? "bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 font-medium"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "border-foreground text-foreground font-medium"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-foreground/30"
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <span>{category.name}</span>
-                  {currentFilters.category === category.slug && (
-                    <Badge variant="outline" className="bg-yellow-500/10">
-                      Active
-                    </Badge>
-                  )}
-                </div>
-                {category.descriptions && (
-                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                    {category.descriptions}
-                  </p>
-                )}
+                {category.name}
               </Link>
             ))}
-            
-            {currentFilters.category && (
-              <>
-                <Separator className="my-2" />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  asChild
-                  className="w-full text-xs"
-                >
-                  <Link href={createFilterLink('category', currentFilters.category)}>
-                    Clear Category Filter
-                  </Link>
-                </Button>
-              </>
-            )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </motion.div>
 
       {/* Tags */}
       <motion.div variants={ANIMATION_VARIANTS.slideUp} transition={{ delay: 0.1 }}>
-        <Card className="border-yellow-500/20 shadow-lg shadow-yellow-500/5">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Tag className="h-5 w-5 text-yellow-500" />
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Tag className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               Tags
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <Link
-                  key={tag.documentId}
-                  href={createFilterLink('tag', tag.slug)}
+            </h3>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <Link
+                key={tag.documentId}
+                href={createFilterLink('tag', tag.slug)}
+              >
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "cursor-pointer transition-colors text-xs font-normal",
+                    currentFilters.tag === tag.slug
+                      ? "bg-foreground text-background border-foreground"
+                      : "border-border text-muted-foreground hover:bg-muted hover:border-foreground/50"
+                  )}
                 >
-                  <Badge
-                    variant={currentFilters.tag === tag.slug ? "default" : "outline"}
-                    className={cn(
-                      "cursor-pointer transition-colors hover:bg-yellow-500/10",
-                      currentFilters.tag === tag.slug
-                        ? "bg-yellow-500 hover:bg-yellow-600 text-black"
-                        : "border-yellow-500/30 hover:border-yellow-500/60"
-                    )}
-                  >
-                    {tag.name}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
-            
-            {currentFilters.tag && (
-              <>
-                <Separator className="my-4" />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  asChild
-                  className="w-full text-xs"
-                >
-                  <Link href={createFilterLink('tag', currentFilters.tag)}>
-                    Clear Tag Filter
-                  </Link>
-                </Button>
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Popular Articles - Placeholder for future implementation */}
-      <motion.div variants={ANIMATION_VARIANTS.slideUp} transition={{ delay: 0.2 }}>
-        <Card className="border-yellow-500/20 shadow-lg shadow-yellow-500/5">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <TrendingUp className="h-5 w-5 text-yellow-500" />
-              Popular This Week
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Popular articles feature coming soon...
-            </p>
-          </CardContent>
-        </Card>
+                  {tag.name}
+                </Badge>
+              </Link>
+            ))}
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   )

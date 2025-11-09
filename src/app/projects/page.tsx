@@ -1,75 +1,58 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import dynamic from "next/dynamic"
-import { motion } from "framer-motion"
-import { Container } from "@/components/ui/container"
-import { ProjectsHero } from "@/components/projects/projects-hero"
-import { ProjectsFilter } from "@/components/projects/projects-filter"
-import { ProjectsGrid } from "@/components/projects/projects-grid"
-// import { BackgroundBlobs } from "@/components/projects/background-blobs"
-import { PROJECTS, type Project } from "@/constants/projects"
+import * as React from "react";
+import dynamic from "next/dynamic";
+import { Container } from "@/components/ui/container";
+import { ProjectsHero } from "@/components/projects/projects-hero";
+import { ProjectsFilter } from "@/components/projects/projects-filter";
+import { ProjectsGrid } from "@/components/projects/projects-grid";
+import { PROJECTS, type Project } from "@/constants/projects";
 
-
-const GitHubRepos = dynamic(() => import("@/components/projects/github-repos").then(mod => mod.GitHubRepos), {
-  ssr: false,
-  loading: () => <div className="text-center text-muted-foreground">Loading GitHub Repos...</div>,
-})
-
-
-// Reusable motion variants (lebih enteng)
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay },
-  }),
-}
+const GitHubRepos = dynamic(
+  () =>
+    import("@/components/projects/github-repos").then((mod) => mod.GitHubRepos),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="text-center text-muted-foreground py-16">
+        Loading GitHub Repos...
+      </div>
+    ),
+  }
+);
 
 export default function ProjectsPage() {
-  const [selectedFilter, setSelectedFilter] = React.useState<string>("all")
+  const [selectedFilter, setSelectedFilter] = React.useState<string>("all");
 
-  // Gunakan useMemo biar filtering nggak dihitung ulang kecuali filter berubah
+  // Filter projects based on selected category
   const filteredProjects = React.useMemo<Project[]>(() => {
-    if (selectedFilter === "all") return PROJECTS
-    return PROJECTS.filter((project) => project.category === selectedFilter)
-  }, [selectedFilter])
+    if (selectedFilter === "all") return PROJECTS;
+    return PROJECTS.filter((project) => project.category === selectedFilter);
+  }, [selectedFilter]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      {/* Background Blobs */}
-      {/* <BackgroundBlobs /> */}
+    <main className="min-h-screen bg-background">
+      <Container>
+        <div className="max-w-6xl mx-auto py-12 md:py-16 lg:py-20">
+          <ProjectsHero />
 
-      {/* Content */}
-      <Container className="relative z-10">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          className="space-y-16 py-16"
-        >
-          {/* Hero Section */}
-          <motion.div variants={fadeInUp} custom={0}>
-            <ProjectsHero />
-          </motion.div>
-
-          {/* Filter Section */}
-          <motion.div variants={fadeInUp} custom={0.2}>
+          <div className="mt-12 lg:mt-16 space-y-12">
+            {/* Filter Section */}
             <ProjectsFilter
               selectedFilter={selectedFilter}
               onFilterChange={setSelectedFilter}
             />
-          </motion.div>
 
-          {/* Projects Grid */}
-          <motion.div variants={fadeInUp} custom={0.4}>
+            {/* Projects List */}
             <ProjectsGrid projects={filteredProjects} />
-          </motion.div>
-        </motion.div>
+          </div>
 
-        {/* Lazy Loaded GitHub Repos */}
-        <GitHubRepos />
+          {/* Lazy Loaded GitHub Repos */}
+          <div className="mt-20">
+            <GitHubRepos />
+          </div>
+        </div>
       </Container>
     </main>
-  )
+  );
 }

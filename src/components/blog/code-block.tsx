@@ -141,9 +141,9 @@ export function CodeBlock({
       <div className="flex items-center justify-between bg-muted/50 border-b border-border/50 px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+            <div className="w-3 h-3 rounded-full bg-muted-foreground/40" />
+            <div className="w-3 h-3 rounded-full bg-muted-foreground/40" />
+            <div className="w-3 h-3 rounded-full bg-muted-foreground/40" />
           </div>
           
           <div className="flex items-center gap-2">
@@ -173,7 +173,7 @@ export function CodeBlock({
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           {isExecutable && detectedLang === 'python' && (
             <button
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs rounded-md transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground hover:bg-foreground/90 text-background text-xs rounded-md transition-colors"
             >
               <Play className="h-3 w-3" />
               Run
@@ -183,7 +183,7 @@ export function CodeBlock({
           {allowDownload && (
             <button
               onClick={downloadCode}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-md transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground hover:bg-foreground/90 text-background text-xs rounded-md transition-colors"
             >
               <Download className="h-3 w-3" />
               Download
@@ -197,8 +197,8 @@ export function CodeBlock({
             >
               {copied ? (
                 <>
-                  <Check className="h-3 w-3 text-green-500" />
-                  <span className="text-green-500">Copied!</span>
+                  <Check className="h-3 w-3 text-foreground" />
+                  <span className="text-foreground">Copied!</span>
                 </>
               ) : (
                 <>
@@ -246,7 +246,7 @@ export function CodeBlock({
         {/* Highlight indicator for highlighted lines */}
         {highlightLines.length > 0 && (
           <div className="absolute right-4 top-4">
-            <div className="px-2 py-1 bg-blue-500/20 border border-blue-500/30 rounded text-xs text-blue-400">
+            <div className="px-2 py-1 bg-muted border border-border rounded text-xs text-muted-foreground">
               {highlightLines.length} line{highlightLines.length > 1 ? 's' : ''} highlighted
             </div>
           </div>
