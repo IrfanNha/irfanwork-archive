@@ -13,6 +13,8 @@ export const TECH_STACK = [
   "shadcn/ui",
   "elliptic",
   "crypto",
+  "shadcn",
+  "FingerprintJS",
 ] as const;
 
 export type TechStack = typeof TECH_STACK[number];
@@ -75,5 +77,23 @@ export const PROJECTS: Project[] = [
     liveUrl: "https://willezurmacht.vercel.app",
     image: "/projects/willezurmacht.png",
   },
+  {
+    id: "5",
+    name: "IW ShortLink",
+    description:
+      "A personal shortlink provider built with Next.js, TypeScript, and MockAPI. Features visitor tracking via FingerprintJS and analytics via Vercel. Designed with shadcn@latest and a clean, modern aesthetic.",
+    tech: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "shadcn",
+      "FingerprintJS",
+    ],
+    category: "tool",
+    url: "https://github.com/IrfanNha/shortlink-provider",
+    liveUrl: "https://iwsl.vercel.app",
+    image: "/projects/iwsl.png",
+  },
 ];
+
 
