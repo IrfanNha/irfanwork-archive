@@ -7,7 +7,7 @@ import { ChevronRight } from "lucide-react";
 import { CORE_INTERESTS } from "@/constants/home";
 import { Container } from "../ui/container";
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 export function HomeCoreInterests() {
   const ref = React.useRef<HTMLDivElement>(null);

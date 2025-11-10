@@ -84,7 +84,11 @@ export function ThemeDropdown() {
       </DropdownMenuTrigger>
 
       <AnimatePresence>
-        <DropdownMenuContent align="end" className="w-40 border-border" asChild>
+        <DropdownMenuContent
+          align="end"
+          className="w-40 border-border bg-white dark:bg-[#121212] text-foreground shadow-md"
+          asChild
+        >
           <motion.div
             variants={ANIMATION_VARIANTS.scale}
             initial="hidden"
@@ -123,21 +127,10 @@ export function ThemeDropdown() {
                       <AnimatePresence>
                         {isSelected && (
                           <motion.div
-                            initial={{
-                              scale: 0,
-                              opacity: 0,
-                            }}
-                            animate={{
-                              scale: 1,
-                              opacity: 1,
-                            }}
-                            exit={{
-                              scale: 0,
-                              opacity: 0,
-                            }}
-                            transition={{
-                              duration: MOTION.FAST,
-                            }}
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ duration: MOTION.FAST }}
                           >
                             <Check className="h-3 w-3 text-primary" />
                           </motion.div>
@@ -149,9 +142,7 @@ export function ThemeDropdown() {
                         className="absolute inset-0 bg-primary/10"
                         initial={{ opacity: 0 }}
                         whileHover={{ opacity: 1 }}
-                        transition={{
-                          duration: MOTION.FAST,
-                        }}
+                        transition={{ duration: MOTION.FAST }}
                       />
                     </motion.div>
                   </DropdownMenuItem>

@@ -21,6 +21,11 @@ export function HomeAbout() {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { theme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const drives = React.useMemo(
     () => [
@@ -44,21 +49,52 @@ export function HomeAbout() {
             transition={{ duration: 0.8 }}
             className="relative flex items-center justify-center"
           >
-            {/* Main Icon */}
             <motion.div
-              className="w-40 h-40 md:w-56 md:h-56 flex items-center justify-center rounded-2xl bg-card border border-border"
+              className="relative flex items-center justify-center rounded-full bg-card border border-border overflow-visible w-32 h-32 sm:w-36 sm:h-36 md:w-56 md:h-56"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
             >
-              <div className="w-20 h-20 md:w-28 md:h-28 border-2 border-foreground/20 rounded-lg flex items-center justify-center">
-                <Image
-                  src={theme === "dark" ? "/icon-light.svg" : "/icon.svg"}
-                  alt="Site Logo"
-                  width={48}
-                  height={48}
-                  className="object-contain transition-transform duration-300 hover:scale-105"
-                  priority
-                />
+              {/* Orbit rings (only render after mounted to avoid SSR mismatch) */}
+              {mounted &&
+                [1, 1.4, 1.8].map((scale, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute rounded-full border border-foreground/10"
+                    style={{
+                      width: `${100 * scale}%`,
+                      height: `${100 * scale}%`,
+                    }}
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 20 + i * 10,
+                      ease: "linear",
+                    }}
+                  >
+                    <motion.span
+                      className="absolute top-0 left-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full"
+                      style={{
+                        backgroundColor:
+                          theme === "dark"
+                            ? "rgba(255,255,255,0.6)"
+                            : "rgba(0,0,0,0.5)",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                    />
+                  </motion.div>
+                ))}
+
+              <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 border-2 border-foreground/20 rounded-full flex items-center justify-center bg-background">
+                {mounted && (
+                  <Image
+                    src={theme === "dark" ? "/icon-light.svg" : "/icon.svg"}
+                    alt="Site Logo"
+                    width={40}
+                    height={40}
+                    className="object-contain transition-transform duration-300 hover:scale-105"
+                    priority
+                  />
+                )}
               </div>
             </motion.div>
           </motion.div>
@@ -70,7 +106,6 @@ export function HomeAbout() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-8"
           >
-            {/* Section header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : undefined}
@@ -81,14 +116,13 @@ export function HomeAbout() {
                 About Me
               </Badge>
 
-              <h2 className="text-4xl md:text-5xl font-bold">
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">
                 Crafting Digital
                 <br />
                 Experiences
               </h2>
             </motion.div>
 
-            {/* Bio */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : undefined}
@@ -98,7 +132,6 @@ export function HomeAbout() {
               {PERSONAL_INFO.fullBio}
             </motion.p>
 
-            {/* Skills/Interests preview */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : undefined}
@@ -122,14 +155,12 @@ export function HomeAbout() {
               </div>
             </motion.div>
 
-            {/* Contact & Social */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.6, delay: 0.6 }}
               className="space-y-6"
             >
-              {/* Email CTA */}
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -142,12 +173,11 @@ export function HomeAbout() {
                 </Button>
               </motion.div>
 
-              {/* Social Links */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap">
                 <span className="text-sm text-muted-foreground">
                   Connect with me:
                 </span>
-                <div className="flex gap-3">
+                <div className="flex gap-3 flex-wrap">
                   {Object.entries(PERSONAL_INFO.socialLinks).map(
                     ([platform, url], index) => {
                       const Icon =

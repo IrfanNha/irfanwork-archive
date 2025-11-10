@@ -27,8 +27,8 @@ export const FOOTER_LINKS = {
     { label: "Contact", href: "/contact" },
   ],
   legal: [
-    { label: "Privacy Policy", href: "/" },
-    { label: "Terms of Service", href: "/" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
   ],
 } as const;
 

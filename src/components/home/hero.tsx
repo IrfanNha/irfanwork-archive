@@ -19,7 +19,7 @@ export function HomeHero() {
   return (
     <motion.section
       style={{ y, opacity }}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden py-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden py-20 pb-24 border-b"
     >
       <Container>
         <div className="container mx-auto relative z-10">
