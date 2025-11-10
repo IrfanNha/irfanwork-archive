@@ -23,12 +23,12 @@ export const MAIN_NAV: NavLink[] = [
 export const FOOTER_LINKS = {
   company: [
     { label: "About", href: "/about" },
-    { label: "Articles", href: "/articles" },
+    { label: "Blogs", href: "/blog" },
     { label: "Contact", href: "/contact" },
   ],
   legal: [
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
+    { label: "Privacy Policy", href: "/" },
+    { label: "Terms of Service", href: "/" },
   ],
 } as const;
 
