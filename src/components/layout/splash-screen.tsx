@@ -39,6 +39,7 @@ export default function SplashScreen() {
                 style={{
                   width: `${12 * scale}rem`,
                   height: `${12 * scale}rem`,
+                  borderWidth: "1px",
                 }}
                 animate={{ rotate: 360 }}
                 transition={{
@@ -48,13 +49,13 @@ export default function SplashScreen() {
                 }}
               >
                 <motion.span
-                  className="absolute top-0 left-1/2 w-1.5 h-1.5 rounded-full"
+                  className="absolute left-1/2 w-[0.44rem] h-[0.44rem] rounded-full 
+             bg-[#121212]/85 dark:bg-white/85"
                   style={{
-                    backgroundColor:
-                      i % 2 === 0 ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.7)",
-                    transform: "translate(-50%, -50%)",
+                    top: "-3px",
+                    transform: "translate(-50%, calc(-100% + 1px)) scale(1.05)",
                   }}
-                  animate={{ scale: [1, 1.3, 1] }}
+                  animate={{ scale: [1.05, 1.15, 1.05] }}
                   transition={{
                     duration: 2 + i,
                     repeat: Infinity,
