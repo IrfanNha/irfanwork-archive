@@ -25,7 +25,7 @@ export function HomeCoreInterests() {
             className="text-center mb-16 space-y-4"
           >
             {/* Badge */}
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-border">
+            <div className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-normal border border-border">
               Core Interests
             </div>
 

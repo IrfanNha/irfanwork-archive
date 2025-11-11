@@ -150,7 +150,11 @@ export function Footer() {
                   >
                     {mounted && (
                       <Image
-                        src={theme === "dark" ? "/icon-light.svg" : "/icon.svg"}
+                        src={
+                          theme === "dark"
+                            ? "/logo/light.png"
+                            : "/logo/dark.png"
+                        }
                         alt="Site Logo"
                         width={30}
                         height={30}
@@ -158,8 +162,8 @@ export function Footer() {
                       />
                     )}
                   </motion.div>
-                  <span className="text-lg font-bold text-primary">
-                    {SITE_CONFIG.name}
+                  <span className="text-lg font-medium uppercase text-primary">
+                    {SITE_CONFIG.name}.
                   </span>
                 </Link>
                 <p className="text-muted-foreground mb-4 max-w-sm text-sm dark:text-muted-foreground">

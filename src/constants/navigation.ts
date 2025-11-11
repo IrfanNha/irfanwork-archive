@@ -1,5 +1,5 @@
 // constants/navigation.ts
-import { LucideIcon, Home, FileText, User,  Mail, Github, Twitter, Linkedin, FolderGit2 } from "lucide-react";
+import { LucideIcon, Home, User,  Mail, Github, Twitter, Linkedin, FolderGit2, Newspaper } from "lucide-react";
 import { SITE_CONFIG } from "./site";
 
 export interface NavLink {
@@ -13,7 +13,7 @@ export interface NavLink {
 
 export const MAIN_NAV: NavLink[] = [
   { label: "Home", href: "/", icon: Home, description: "Back to homepage" },
-  { label: "Blogs", href: "/blog", icon: FileText, description: "Browse all articles" },
+  { label: "Blogs", href: "/blog", icon: Newspaper, description: "Browse all articles" },
   { label: "Projects", href: "/projects", icon: FolderGit2, description: "See Our Projects" },
   { label: "About", href: "/about", icon: User, description: "Learn more about us" },
   { label: "Contact", href: "/contact", icon: Mail, description: "Get in touch" },

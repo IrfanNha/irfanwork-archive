@@ -15,7 +15,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { Menu, Search, Sparkles } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import {
   MAIN_NAV,
   SITE_CONFIG,
@@ -51,7 +51,6 @@ export function Header() {
   }, []);
 
   if (!mounted) {
-    // Render placeholder agar SSR tidak mismatch
     return (
       <header className="fixed top-0 left-0 w-full h-16 bg-transparent z-50" />
     );
@@ -62,8 +61,8 @@ export function Header() {
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-300 mx-auto",
         isScrolled
-          ? "bg-background/80 backdrop-blur-md border-b border-border shadow-lg dark:bg-background/95"
-          : "bg-background/60 backdrop-blur-sm border-b border-border dark:bg-background/90"
+          ? "bg-background/80 backdrop-blur-md border-b shadow-lg dark:bg-background/95"
+          : "bg-background/60 backdrop-blur-sm border-b dark:bg-background/90"
       )}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -93,9 +92,11 @@ export function Header() {
                     ease: "easeInOut",
                   }}
                 >
-                  <div className="h-8 w-8 rounded-lg flex items-center justify-center">
+                  <div className="h-7 w-7  rounded-lg flex items-center justify-center">
                     <Image
-                      src={theme === "dark" ? "/icon-light.svg" : "/icon.svg"}
+                      src={
+                        theme === "dark" ? "/logo/light.png" : "/logo/dark.png"
+                      }
                       alt="Site Logo"
                       width={48}
                       height={48}
@@ -104,7 +105,6 @@ export function Header() {
                     />
                   </div>
 
-                  {/* Glow effect */}
                   <motion.div
                     className="absolute inset-0 rounded-lg bg-primary/20 blur-lg"
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -114,7 +114,7 @@ export function Header() {
                 </motion.div>
 
                 <motion.span
-                  className="text-xl font-medium uppercase text-primary group-hover:text-primary transition-all duration-300"
+                  className="text-lg font-medium uppercase text-primary group-hover:text-primary transition-all duration-300"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: MOTION.FAST }}
                 >
@@ -147,7 +147,7 @@ export function Header() {
                         variant={isActive ? "default" : "ghost"}
                         size="sm"
                         className={cn(
-                          "relative group transition-all duration-300",
+                          "relative group uppercase transition-all duration-300",
                           !isActive && "hover:text-primary"
                         )}
                       >
@@ -238,12 +238,26 @@ export function Header() {
                   <SheetHeader>
                     <SheetTitle className="flex items-center gap-2">
                       <div className="h-6 w-6 rounded  flex items-center justify-center">
-                        <Sparkles className="h-3 w-3 text-primary-foreground" />
+                        <Image
+                          src={
+                            theme === "dark"
+                              ? "/logo/light.png"
+                              : "/logo/dark.png"
+                          }
+                          alt="Site Logo"
+                          width={48}
+                          height={48}
+                          className="object-contain transition-transform duration-300 hover:scale-105"
+                          priority
+                        />
                       </div>
                       {SITE_CONFIG.name}
                     </SheetTitle>
 
-                    <SheetDescription className="text-sm text-muted-foreground">
+                    <SheetDescription
+                      className="text-sm text-muted-foreground"
+                      hidden
+                    >
                       Navigate through the sections using the menu below.
                     </SheetDescription>
                   </SheetHeader>
@@ -280,7 +294,7 @@ export function Header() {
                               >
                                 {Icon && <Icon className="mr-3 h-4 w-4" />}
                                 <div className="text-left">
-                                  <div className="font-medium">
+                                  <div className="font-medium uppercase">
                                     {item.label}
                                   </div>
                                   {item.description && (

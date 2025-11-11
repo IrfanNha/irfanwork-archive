@@ -50,16 +50,15 @@ export function HomeAbout() {
             className="relative flex items-center justify-center"
           >
             <motion.div
-              className="relative flex items-center justify-center rounded-full bg-card border border-border overflow-visible w-32 h-32 sm:w-36 sm:h-36 md:w-56 md:h-56"
+              className="relative flex items-center justify-center rounded-full bg-card overflow-visible w-32 h-32 sm:w-36 sm:h-36 md:w-56 md:h-56"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
             >
-              {/* Orbit rings (only render after mounted to avoid SSR mismatch) */}
               {mounted &&
                 [1, 1.4, 1.8].map((scale, i) => (
                   <motion.div
                     key={i}
-                    className="absolute rounded-full border border-foreground/10"
+                    className="absolute rounded-full border border-border"
                     style={{
                       width: `${100 * scale}%`,
                       height: `${100 * scale}%`,
@@ -75,19 +74,19 @@ export function HomeAbout() {
                       className="absolute top-0 left-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full"
                       style={{
                         backgroundColor:
-                          theme === "dark"
-                            ? "rgba(255,255,255,0.6)"
-                            : "rgba(0,0,0,0.5)",
+                          theme === "dark" ? "rgb(255,255,255)" : "rgb(0,0,0)",
                         transform: "translate(-50%, -50%)",
                       }}
                     />
                   </motion.div>
                 ))}
 
-              <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 border-2 border-foreground/20 rounded-full flex items-center justify-center bg-background">
+              <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 border border-border rounded-full flex items-center justify-center bg-background">
                 {mounted && (
                   <Image
-                    src={theme === "dark" ? "/icon-light.svg" : "/icon.svg"}
+                    src={
+                      theme === "dark" ? "/logo/light.png" : "/logo/dark.png"
+                    }
                     alt="Site Logo"
                     width={40}
                     height={40}
