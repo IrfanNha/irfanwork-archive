@@ -1,8 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, MapPin, Phone, Clock, MessageSquare } from "lucide-react";
-
+import {
+  Mail,
+  MapPin,
+  Phone,
+  Clock,
+  MessageSquare,
+  Github,
+  Linkedin,
+  Twitter,
+  Instagram,
+} from "lucide-react";
 import { PERSONAL_INFO } from "@/constants/home";
 
 const contactDetails = [
@@ -18,7 +27,7 @@ const contactDetails = [
     title: "Phone",
     content: PERSONAL_INFO.contact.phoneDisplay,
     link: `tel:${PERSONAL_INFO.contact.phone}`,
-    description: "Mon-Fri from 9am to 6pm",
+    description: "Mon–Fri from 9am to 6pm",
   },
   {
     icon: MapPin,
@@ -38,25 +47,25 @@ const contactDetails = [
 const socialLinks = [
   {
     name: "GitHub",
-    icon: "🐙",
+    icon: Github,
     link: PERSONAL_INFO.socialLinks.github,
-    color: "hover:text-purple-500",
+    color: "hover:text-gray-400",
   },
   {
     name: "LinkedIn",
-    icon: "💼",
+    icon: Linkedin,
     link: PERSONAL_INFO.socialLinks.linkedin,
     color: "hover:text-blue-600",
   },
   {
-    name: "Twitter",
-    icon: "𝕏",
+    name: "Twitter (X)",
+    icon: Twitter,
     link: PERSONAL_INFO.socialLinks.twitter || "https://twitter.com",
-    color: "hover:text-blue-400",
+    color: "hover:text-sky-500",
   },
   {
     name: "Instagram",
-    icon: "📷",
+    icon: Instagram,
     link: PERSONAL_INFO.socialLinks.instagram,
     color: "hover:text-pink-500",
   },
@@ -133,7 +142,10 @@ export function ContactInfo() {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="bg-card border border-border rounded-lg p-6 shadow-sm"
       >
-        <h3 className="text-xl font-bold mb-4">Follow Us</h3>
+        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <MessageSquare className="w-5 h-5 text-primary" />
+          Follow Me
+        </h3>
         <p className="text-sm text-muted-foreground mb-6">
           Stay connected on social media
         </p>
@@ -150,7 +162,7 @@ export function ContactInfo() {
               transition={{ duration: 0.3, delay: 0.4 + index * 0.05 }}
               className={`flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-all hover:shadow-md group ${social.color}`}
             >
-              <span className="text-2xl">{social.icon}</span>
+              <social.icon className="w-5 h-5 text-muted-foreground group-hover:text-current transition-colors" />
               <span className="text-sm font-medium">{social.name}</span>
             </motion.a>
           ))}

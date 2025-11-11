@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { ContactForm } from "@/components/contact/contact-form";
 import { ContactInfo } from "@/components/contact/contact-info";
-import { ContactMap } from "@/components/contact/contact-map";
 import { PERSONAL_INFO } from "@/constants/home";
 
 export const metadata: Metadata = {
@@ -42,11 +41,6 @@ export default function ContactPage() {
               <div className="lg:col-span-1">
                 <ContactInfo />
               </div>
-            </div>
-
-            {/* Map Section */}
-            <div className="mt-12 md:mt-16">
-              <ContactMap />
             </div>
           </div>
         </div>
