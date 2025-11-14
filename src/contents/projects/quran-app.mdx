@@ -1,0 +1,49 @@
+---
+id: "2"
+slug: "quran-app"
+title: "Quran App"
+excerpt: "Progressive web app to read, search, and bookmark Quranic verses with offline support."
+date: "2024-05-18"
+updated: "2024-11-01"
+tech:
+  - Next.js
+  - TypeScript
+  - Tailwind CSS
+  - shadcn/ui
+  - React Query
+banner: "/projects/quran-app.png"
+repo: "https://github.com/IrfanNha/quran-app"
+demo: "https://quran-app-irfanwork.vercel.app"
+category: "web"
+keywords:
+  - quran
+  - pwa
+  - accessibility
+---
+
+## Product pillars
+
+- Accurate Mushaf layout with scalable typography
+- Verse level search with phonetic support
+- Bookmark syncing across sessions
+
+## Architecture
+
+<TechBadges items={["Next.js App Router", "Edge Runtime", "React Query", "Vercel KV"]} />
+
+Data comes from a cached Quran Cloud API. Each verse response is normalized into a light-weight store to avoid re-render storms.
+
+## Experience
+
+<Callout variant="success" title="Accessibility">
+WCAG 2.2 AA compliant: adjustable line height, dyslexia-friendly fonts, and semantic controls for audio playback.
+</Callout>
+
+The reading view relies on responsive CSS columns that collapse to a single column under 768px. Keyboard shortcuts mirror desktop e-readers.
+
+## Result
+
+- First contentful paint: 1.3s on Moto G4
+- Offline reading after first visit
+- 400+ monthly active readers
+

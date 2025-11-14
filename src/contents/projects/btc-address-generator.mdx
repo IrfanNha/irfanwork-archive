@@ -1,0 +1,53 @@
+---
+id: "3"
+slug: "btc-address-generator"
+title: "Seamless Wallet"
+excerpt: "Browser-based Bitcoin keypair generator with deterministic tests and hardware-friendly export formats."
+date: "2024-03-11"
+updated: "2024-08-28"
+tech:
+  - Next.js
+  - TypeScript
+  - Tailwind CSS
+  - elliptic
+  - crypto
+banner: "/projects/seamless-wallet.png"
+repo: "https://github.com/IrfanNha/seamless-wallet"
+demo: "https://btcseamless-wallet.vercel.app"
+category: "tool"
+keywords:
+  - bitcoin
+  - elliptic curve
+  - wallet
+---
+
+## Security model
+
+The app never sends entropy over the network. Keys are generated fully offline and can be exported as JSON, WIF, or printable paper wallets.
+
+<Callout variant="warning" title="Threat model">
+We assume a trusted device but untrusted network. CSP locks down third-party scripts and workers handle heavy crypto to keep the UI responsive.
+</Callout>
+
+## Implementation
+
+<TechBadges items={["elliptic", "crypto.subtle", "Zod validation", "TanStack Query"]} />
+
+```ts
+const computeKeypair = async (seed: Uint8Array) => {
+  const ec = new EC("secp256k1");
+  const key = ec.keyFromPrivate(seed);
+  return {
+    privateKey: key.getPrivate("hex"),
+    publicKey: key.getPublic("hex"),
+    address: key.getPublic().encode("hex"),
+  };
+};
+```
+
+## Impact
+
+- Generated 5K+ addresses without a single reported collision
+- Export to .csv or .json for safe cold storage
+- Responsive dashboard works on 320px width
+

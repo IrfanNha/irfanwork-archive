@@ -4,10 +4,10 @@ import ProjectsPage from "@/components/projects/projects-page";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: `Get in touch with ${PERSONAL_INFO.name}. I'd love to hear from you and answer any questions you may have.`,
+  description: `Explore shipped products, experiments, and tools crafted by ${PERSONAL_INFO.name}.`,
   openGraph: {
     title: `Projects | ${PERSONAL_INFO.name}`,
-    description: `Get in touch with ${PERSONAL_INFO.name}. I'd love to hear from you and answer any questions you may have.`,
+    description: `Explore shipped products, experiments, and tools crafted by ${PERSONAL_INFO.name}.`,
   },
 };
 

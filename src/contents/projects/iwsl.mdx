@@ -1,0 +1,52 @@
+---
+id: "5"
+slug: "iwsl"
+title: "IW ShortLink"
+excerpt: "Self-hosted link shortener with analytics, abuse protection, and fingerprint-based visitor tracking."
+date: "2025-01-02"
+updated: "2025-02-10"
+tech:
+  - Next.js
+  - TypeScript
+  - Tailwind CSS
+  - shadcn/ui
+  - FingerprintJS
+banner: "/projects/iwsl.png"
+repo: "https://github.com/IrfanNha/shortlink-provider"
+demo: "https://iwsl.vercel.app"
+category: "tool"
+keywords:
+  - shortlink
+  - analytics
+  - fingerprint
+---
+
+## Why build a custom shortener?
+
+I wanted branded links, custom metadata, and the ability to reject abusive payloads before they propagate.
+
+<Callout variant="danger" title="Anti-abuse">
+HCaptcha + FingerprintJS prevents bot submissions, while rate limiting lives on Vercel Edge middleware.
+</Callout>
+
+## Stack
+
+<TechBadges items={["Next.js", "tRPC-like RPC layer", "Vercel KV", "Upstash Ratelimit"]} />
+
+```tsx
+<form action={createLink}>
+  <Input
+    name="target"
+    placeholder="https://example.com/article"
+    required
+  />
+  <Button>Generate Link</Button>
+</form>
+```
+
+## Results
+
+- Tracks device + geo without storing PII
+- Realtime dashboard powered by Edge Functions
+- Custom domains supported via DNS challenge workflow
+

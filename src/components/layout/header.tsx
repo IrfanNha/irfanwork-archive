@@ -32,6 +32,7 @@ export function Header() {
   const pathname = usePathname();
   const { openSearch } = useSearch();
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
@@ -214,7 +215,7 @@ export function Header() {
               <ThemeDropdown />
 
               {/* Mobile Menu */}
-              <Sheet>
+              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -283,7 +284,10 @@ export function Header() {
                               delay: index * 0.1,
                             }}
                           >
-                            <Link href={item.href}>
+                            <Link
+                              href={item.href}
+                              onClick={() => setIsMenuOpen(false)}
+                            >
                               <Button
                                 variant={isActive ? "default" : "ghost"}
                                 size="sm"

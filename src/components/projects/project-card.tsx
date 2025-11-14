@@ -76,7 +76,14 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               )}
 
               {/* Links */}
-              <div className="flex items-center gap-4 pt-2">
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <Link
+                  href={`/p/${project.slug}`}
+                  className="flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-foreground/80"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  <span>Case Study</span>
+                </Link>
                 {project.liveUrl && (
                   <Link
                     href={project.liveUrl}

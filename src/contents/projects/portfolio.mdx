@@ -1,0 +1,49 @@
+---
+id: "1"
+slug: "portfolio"
+title: "Irfanwork Portfolio"
+excerpt: "A polished personal site that highlights work, thinking, and writing with fast performance scores and accessible UI."
+date: "2024-08-01"
+updated: "2024-10-05"
+tech:
+  - Next.js
+  - TypeScript
+  - Tailwind CSS
+  - Framer Motion
+  - shadcn/ui
+banner: "/projects/portfolio.png"
+repo: "https://github.com/IrfanNha/irfanwork"
+demo: "https://irfanwork.cloud"
+category: "web"
+keywords:
+  - portfolio
+  - nextjs
+  - framer motion
+---
+
+## Strategy
+
+The new portfolio focuses on clarity, high information density, and smooth motion. I mapped every section (hero, specialties, project reels, blog teasers) to a user journey, then defined interaction contracts for keyboard users, screen readers, and touch devices.
+
+<Callout title="Design Goals" icon="✨">
+Ship a layout that feels editorial, keeps cumulative layout shift under 0.01, and renders meaningful content in less than 1s on a 4G connection.
+</Callout>
+
+## Tech Decisions
+
+<TechBadges items={["Next.js 15 App Router", "Server Components", "Tailwind CSS 4", "Framer Motion 12"]} />
+
+I kept the bundle lean by aggressively tree-shaking shadcn components, co-locating motion variants, and using static data for most sections. Complex interactions (theme switcher, GitHub stats) live in small client islands.
+
+## Visual System
+
+<Image src="/projects/portfolio.png" alt="Portfolio landing page" width={1280} height={720} />
+
+The typography grid uses a 1.25 modular scale and CSS variables for dark/light themes. Custom gradients and blurred highlights are implemented with CSS Houdini paint API fallbacks.
+
+## Outcomes
+
+- Lighthouse 99/100/100/100 on both desktop and mobile
+- Bounce rate dropped by 28% thanks to clearer CTAs
+- Publishing new case studies now takes ~5 minutes via MDX
+

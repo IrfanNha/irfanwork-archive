@@ -1,0 +1,39 @@
+---
+id: "4"
+slug: "willezur-macht"
+title: "Wille zur Macht"
+excerpt: "Digital philosophy journal that blends long-form essays, Instagram drops, and newsletter archives."
+date: "2023-12-20"
+updated: "2024-09-14"
+tech:
+  - Next.js
+  - Tailwind CSS
+  - TypeScript
+  - shadcn/ui
+banner: "/projects/willezurmacht.png"
+repo: "https://github.com/IrfanNha/willezurmacht"
+demo: "https://willezurmacht.vercel.app"
+category: "content"
+keywords:
+  - philosophy
+  - publishing
+---
+
+## Editorial workflow
+
+Writers draft in Notion, export to Markdown, then drop files into the `/content/issues` directory. Incremental static regeneration publishes new essays instantly.
+
+<Callout icon="🪶">
+Typography leans on Cormorant + Space Grotesk with fallback stacks for consistent rendering.
+</Callout>
+
+## Social bridge
+
+Instagram carousels are mirrored on the site via GraphQL snapshots, so every idea has a canonical URL for SEO.
+
+## Outcomes
+
+- 3× longer average read time vs. previous blog
+- Newsletter signups grew 42% after launch
+- Editors can preview drafts locally with a single `pnpm dev`
+

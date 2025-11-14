@@ -19,20 +19,20 @@ export const metadata: Metadata = {
 };
 
 interface BlogPageProps {
-  searchParams?: {
+  searchParams?: Promise<{
     search?: string;
     category?: string;
     tag?: string;
     sort?: "newest" | "oldest" | "popular";
     page?: string;
-  };
+  }>;
 }
 
 // Enable ISR for this page
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
-  const sp = searchParams ?? {};
+  const sp = (searchParams ? await searchParams : {}) ?? {};
 
   const filters = {
     search: sp.search,

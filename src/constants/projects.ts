@@ -17,35 +17,36 @@ export const TECH_STACK = [
   "FingerprintJS",
 ] as const;
 
-export type TechStack = typeof TECH_STACK[number];
+export type TechStack = (typeof TECH_STACK)[number];
 
-// Type untuk project
 export type Project = {
   id: string;
+  slug: string;
   name: string;
   description: string;
   tech: TechStack[];
   category: "web" | "app" | "tool" | "other" | "content";
-  url: string;       
-  liveUrl: string;   
-  image: string;     
+  url: string;
+  liveUrl: string;
+  image: string;
 };
 
-// Daftar project
 export const PROJECTS: Project[] = [
   {
     id: "1",
+    slug: "portfolio",
     name: "Portfolio Website",
     description:
       "Personal portfolio built with Next.js, Tailwind CSS & Framer Motion.",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
     category: "web",
     url: "https://github.com/IrfanNha/irfanwork",
-    liveUrl: "https://irfanwork.cloud",
+    liveUrl: "https://irfanwork.vercel.app",
     image: "/projects/portfolio.png",
   },
   {
     id: "2",
+    slug: "quran-app",
     name: "Quran App",
     description:
       "A web application to read, search, and bookmark Quranic verses. Fully responsive and optimized for mobile.",
@@ -57,6 +58,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "3",
+    slug: "btc-address-generator",
     name: "BTC Address Generator",
     description:
       "Web-based Bitcoin address generator using elliptic curve cryptography. Built with Next.js and TypeScript.",
@@ -68,6 +70,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "4",
+    slug: "willezur-macht",
     name: "Wille zur Macht",
     description:
       "A digital platform for publishing philosophical essays and reflections inspired by Nietzschean thought. Integrates aesthetic visuals and social engagement via Instagram @willezur.macht.",
@@ -79,6 +82,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "5",
+    slug: "iwsl",
     name: "IW ShortLink",
     description:
       "A personal shortlink provider built with Next.js, TypeScript, and MockAPI. Features visitor tracking via FingerprintJS and analytics via Vercel. Designed with shadcn@latest and a clean, modern aesthetic.",
@@ -95,5 +99,3 @@ export const PROJECTS: Project[] = [
     image: "/projects/iwsl.png",
   },
 ];
-
-
