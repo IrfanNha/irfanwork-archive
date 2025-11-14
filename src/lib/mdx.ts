@@ -7,6 +7,7 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import type { PluggableList } from "unified";
 
 import { mdxComponents } from "@/components/mdx/mdx-content";
 import type {
@@ -25,9 +26,9 @@ interface ProjectSource {
   body: string;
 }
 
-const remarkPlugins = [remarkGfm];
+const remarkPlugins: PluggableList = [remarkGfm];
 
-const rehypePlugins = [
+const rehypePlugins: PluggableList = [
   rehypeSlug,
   [
     rehypeAutolinkHeadings,
@@ -39,7 +40,7 @@ const rehypePlugins = [
       behavior: "append",
     },
   ],
-] as const;
+];
 
 async function loadProjectFile(slug: string): Promise<ProjectSource | null> {
   try {

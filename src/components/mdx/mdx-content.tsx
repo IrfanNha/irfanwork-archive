@@ -1,5 +1,5 @@
 import Image, { ImageProps } from "next/image";
-import type { ReactElement, ReactNode } from "react";
+import { isValidElement, type ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -130,12 +130,14 @@ const Anchor = ({
 );
 
 const Pre = (props: React.HTMLAttributes<HTMLPreElement>) => {
-  const child = props.children as ReactElement;
+  const child = props.children;
 
   if (
-    child &&
-    typeof child === "object" &&
-    "props" in child &&
+    isValidElement<{
+      children: string;
+      className?: string;
+      metastring?: string;
+    }>(child) &&
     typeof child.props.children === "string"
   ) {
     const language =
