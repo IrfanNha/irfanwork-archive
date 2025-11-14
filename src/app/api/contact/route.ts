@@ -5,8 +5,6 @@ import { verifyRecaptcha, detectSpamPatterns } from '@/lib/recaptcha';
 import { generateContactEmailHTML } from '@/lib/email-template';
 import { SITE_CONFIG } from '@/constants/site';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 // Rate limiting: in-memory store (Map<IP, timestamp>)
 const rateLimitMap = new Map<string, number>();
 const RATE_LIMIT_WINDOW = 5000; // 5 seconds in milliseconds
@@ -66,6 +64,21 @@ function checkRateLimit(ip: string): { allowed: boolean; remainingTime?: number 
 
 export async function POST(request: NextRequest) {
   try {
+    // Check Resend API key first
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      console.error('RESEND_API_KEY is not set');
+      return NextResponse.json(
+        {
+          error: 'Server configuration error. Please try again later.',
+        },
+        { status: 500 }
+      );
+    }
+
+    // Initialize Resend with API key
+    const resend = new Resend(resendApiKey);
+
     // Get client information
     const ip = getClientIP(request);
     const userAgent = request.headers.get('user-agent') || 'Unknown';
@@ -84,7 +97,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse and validate request body
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      console.error('Failed to parse request body:', parseError);
+      return NextResponse.json(
+        {
+          error: 'Invalid request format.',
+        },
+        { status: 400 }
+      );
+    }
+
     const validationResult = contactSchema.safeParse(body);
 
     if (!validationResult.success) {
@@ -145,17 +170,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check Resend API key
-    if (!process.env.RESEND_API_KEY) {
-      console.error('RESEND_API_KEY is not set');
-      return NextResponse.json(
-        {
-          error: 'Server configuration error. Please try again later.',
-        },
-        { status: 500 }
-      );
-    }
-
     // Generate email HTML
     const emailHTML = generateContactEmailHTML({
       name,
@@ -171,19 +185,31 @@ export async function POST(request: NextRequest) {
     // Use environment variable for "from" address, fallback to Resend's test domain
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'Contact Form <onboarding@resend.dev>';
     
-    const emailResult = await resend.emails.send({
-      from: fromEmail,
-      to: recipientEmail,
-      replyTo: email,
-      subject: `New Contact Form Message from ${name}`,
-      html: emailHTML,
-    });
+    try {
+      const emailResult = await resend.emails.send({
+        from: fromEmail,
+        to: recipientEmail,
+        replyTo: email,
+        subject: `New Contact Form Message from ${name}`,
+        html: emailHTML,
+      });
 
-    if (emailResult.error) {
-      console.error('Resend API error:', emailResult.error);
+      if (emailResult.error) {
+        console.error('Resend API error:', JSON.stringify(emailResult.error, null, 2));
+        return NextResponse.json(
+          {
+            error: 'Failed to send email. Please try again later.',
+            details: emailResult.error.message || 'Unknown error',
+          },
+          { status: 500 }
+        );
+      }
+    } catch (emailError) {
+      console.error('Email sending exception:', emailError);
       return NextResponse.json(
         {
           error: 'Failed to send email. Please try again later.',
+          details: emailError instanceof Error ? emailError.message : 'Unknown error',
         },
         { status: 500 }
       );
@@ -198,9 +224,14 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Contact API error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error('Error stack:', errorStack);
+    
     return NextResponse.json(
       {
         error: 'An unexpected error occurred. Please try again later.',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
       },
       { status: 500 }
     );

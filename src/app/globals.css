@@ -274,3 +274,11 @@
 .animate-spin {
   animation: spin 1s linear infinite;
 }
+
+/* Hide reCAPTCHA badge */
+.grecaptcha-badge {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  bottom: -9999px !important;
+}

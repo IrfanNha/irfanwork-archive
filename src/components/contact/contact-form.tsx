@@ -160,8 +160,20 @@ export function ContactForm() {
             remainingTime: data.remainingTime,
           });
         } else {
+          // Show detailed error in development, generic in production
+          const errorMessage = data.details && process.env.NODE_ENV === 'development'
+            ? `${data.error || "Failed to send message"}: ${data.details}`
+            : data.error || "Failed to send message. Please try again.";
+          
+          console.error("Contact form error:", {
+            status: response.status,
+            error: data.error,
+            details: data.details,
+            fullResponse: data,
+          });
+          
           setError({
-            message: data.error || "Failed to send message. Please try again.",
+            message: errorMessage,
           });
         }
         setStatus("error");
@@ -340,6 +352,29 @@ export function ContactForm() {
             )}
           </Button>
         </div>
+
+        {/* reCAPTCHA Compliance Notice */}
+        <p className="text-xs text-muted-foreground text-center mt-4">
+          This site is protected by reCAPTCHA and the Google{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            Privacy Policy
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://policies.google.com/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            Terms of Service
+          </a>{" "}
+          apply.
+        </p>
       </form>
     </motion.div>
   );
