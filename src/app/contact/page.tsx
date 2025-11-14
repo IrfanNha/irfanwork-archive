@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { Container } from "@/components/ui/container";
-import { ContactForm } from "@/components/contact/contact-form";
 import { ContactInfo } from "@/components/contact/contact-info";
 import { PERSONAL_INFO } from "@/constants/home";
+import ContactForm from "@/components/contact/contact-form";
 
 export const metadata: Metadata = {
   title: "Contact",
