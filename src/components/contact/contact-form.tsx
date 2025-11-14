@@ -1,227 +1,99 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { contactSchema } from "@/lib/validation";
+import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
-interface FormData {
-  name: string;
-  email: string;
-  message: string;
-}
-
+type ContactFormValues = z.infer<typeof contactSchema>;
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
 interface FormError {
   message: string;
-  remainingTime?: number;
-}
-
-declare global {
-  interface Window {
-    grecaptcha: {
-      ready: (callback: () => void) => void;
-      execute: (siteKey: string, options: { action: string }) => Promise<string>;
-    };
-  }
 }
 
 export function ContactForm() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    message: "",
-  });
   const [status, setStatus] = useState<FormStatus>("idle");
-  const [error, setError] = useState<FormError | null>(null);
-  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
-  const recaptchaScriptRef = useRef<HTMLScriptElement | null>(null);
-  const formRef = useRef<HTMLFormElement | null>(null);
+  const [formError, setFormError] = useState<FormError | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const formStartRef = useRef<number>(Date.now());
+  const hasInteractedRef = useRef(false);
 
-  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+      honeypot: "",
+    },
+  });
 
-  // Load reCAPTCHA script
-  useEffect(() => {
-    if (!recaptchaSiteKey) {
-      console.warn("NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set");
-      return;
+  const messageValue = watch("message") ?? "";
+  const MAX_MESSAGE_LENGTH = 2000;
+
+  const handleFirstInteraction = () => {
+    if (!hasInteractedRef.current) {
+      hasInteractedRef.current = true;
+      formStartRef.current = Date.now();
     }
-
-    // Check if script is already loaded
-    if (window.grecaptcha) {
-      setRecaptchaLoaded(true);
-      return;
-    }
-
-    // Check if script element already exists
-    const existingScript = document.querySelector('script[src*="recaptcha"]');
-    if (existingScript) {
-      // Wait for it to load
-      const checkInterval = setInterval(() => {
-        if (window.grecaptcha) {
-          setRecaptchaLoaded(true);
-          clearInterval(checkInterval);
-        }
-      }, 100);
-      return () => clearInterval(checkInterval);
-    }
-
-    // Create and inject script
-    const script = document.createElement("script");
-    script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      if (window.grecaptcha) {
-        window.grecaptcha.ready(() => {
-          setRecaptchaLoaded(true);
-        });
-      }
-    };
-    document.head.appendChild(script);
-    recaptchaScriptRef.current = script;
-
-    return () => {
-      // Cleanup: remove script if component unmounts
-      if (recaptchaScriptRef.current && recaptchaScriptRef.current.parentNode) {
-        recaptchaScriptRef.current.parentNode.removeChild(recaptchaScriptRef.current);
-      }
-    };
-  }, [recaptchaSiteKey]);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    // Clear error when user starts typing
-    if (error) {
-      setError(null);
-      setStatus("idle");
-    }
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  const onSubmit = handleSubmit(async (values) => {
     setStatus("submitting");
-
-    // Validate reCAPTCHA is loaded
-    if (!recaptchaLoaded || !window.grecaptcha) {
-      setError({
-        message: "reCAPTCHA is not loaded. Please refresh the page and try again.",
-      });
-      setStatus("error");
-      return;
-    }
+    setFormError(null);
+    setSuccessMessage(null);
 
     try {
-      // Get reCAPTCHA token
-      let recaptchaToken = "";
-      try {
-        recaptchaToken = await window.grecaptcha.execute(recaptchaSiteKey, {
-          action: "contact_form",
-        });
-      } catch (recaptchaError) {
-        console.error("reCAPTCHA execution error:", recaptchaError);
-        setError({
-          message: "Failed to verify you're human. Please try again.",
-        });
-        setStatus("error");
-        return;
-      }
-
-      // Create FormData from form
-      if (!formRef.current) {
-        setError({
-          message: "Form reference not found. Please refresh the page.",
-        });
-        setStatus("error");
-        return;
-      }
-
-      const formDataToSend = new FormData(formRef.current);
-      formDataToSend.append("recaptchaToken", recaptchaToken);
-
-      // Send to API with FormData (no Content-Type header - browser sets it automatically)
+      const interactionDuration = Date.now() - formStartRef.current;
       const response = await fetch("/api/contact", {
         method: "POST",
-        body: formDataToSend,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...values,
+          interactionDuration,
+        }),
       });
 
-      // Parse response with error handling
-      let data;
-      try {
-        const text = await response.text();
-        data = text ? JSON.parse(text) : {};
-      } catch (parseError) {
-        console.error("Failed to parse API response:", parseError);
-        setError({
-          message: "Invalid response from server. Please try again.",
-        });
-        setStatus("error");
-        return;
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result?.message ?? "Unable to send your message.");
       }
 
-      if (!response.ok) {
-        // Handle rate limiting
-        if (response.status === 429) {
-          setError({
-            message: data?.error || "Too many requests. Please wait a moment.",
-            remainingTime: data?.remainingTime,
-          });
-        } else {
-          // Handle Web3Forms-specific errors
-          let errorMessage = data?.error || "Failed to send message. Please try again.";
-          
-          // Map Web3Forms error types to user-friendly messages
-          if (data?.details === 'browser-error') {
-            errorMessage = "Browser validation error. Please check your form data and try again.";
-          } else if (data?.details === 'validation-error') {
-            errorMessage = "Form validation failed. Please check all required fields are filled correctly.";
-          } else if (data?.details && process.env.NODE_ENV === 'development') {
-            // Show detailed error in development
-            errorMessage = `${data?.error || "Failed to send message"}: ${data.details}`;
-          }
-          
-          console.error("Contact form error:", {
-            status: response.status,
-            statusText: response.statusText,
-            error: data?.error,
-            details: data?.details,
-            fullResponse: data,
-          });
-          
-          setError({
-            message: errorMessage,
-          });
-        }
-        setStatus("error");
-        return;
-      }
-
-      // Success
       setStatus("success");
-      
-      // Clear form after a short delay
-      setTimeout(() => {
-        setFormData({ name: "", email: "", message: "" });
-        setStatus("idle");
-      }, 3000);
-    } catch (fetchError) {
-      console.error("Form submission error:", fetchError);
-      setError({
-        message: "Network error. Please check your connection and try again.",
-      });
+      setSuccessMessage(result.message ?? "Message sent successfully!");
+      reset();
+      hasInteractedRef.current = false;
+      formStartRef.current = Date.now();
+    } catch (error) {
       setStatus("error");
+      setFormError({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while sending your message.",
+      });
     }
-  };
+  });
+
+  const isButtonDisabled = !isValid || status === "submitting" || isSubmitting;
 
   return (
     <motion.div
@@ -237,7 +109,23 @@ export function ContactForm() {
         </p>
       </div>
 
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+      <form
+        onSubmit={onSubmit}
+        noValidate
+        className="space-y-6"
+        onFocusCapture={handleFirstInteraction}
+      >
+        {/* Honeypot field for bots */}
+        <div className="sr-only" aria-hidden="true">
+          <label htmlFor="website">Leave this field empty</label>
+          <input
+            id="website"
+            tabIndex={-1}
+            autoComplete="off"
+            {...register("honeypot")}
+          />
+        </div>
+
         {/* Name and Email Row */}
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
@@ -246,14 +134,21 @@ export function ContactForm() {
             </Label>
             <Input
               id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
               placeholder="John Doe"
-              required
-              disabled={status === "submitting"}
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? "name-error" : undefined}
               className="transition-all focus:ring-2 focus:ring-primary/20"
+              {...register("name")}
             />
+            {errors.name && (
+              <p
+                id="name-error"
+                className="text-sm text-destructive"
+                role="alert"
+              >
+                {errors.name.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -262,15 +157,22 @@ export function ContactForm() {
             </Label>
             <Input
               id="email"
-              name="email"
               type="email"
-              value={formData.email}
-              onChange={handleChange}
               placeholder="john@example.com"
-              required
-              disabled={status === "submitting"}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? "email-error" : undefined}
               className="transition-all focus:ring-2 focus:ring-primary/20"
+              {...register("email")}
             />
+            {errors.email && (
+              <p
+                id="email-error"
+                className="text-sm text-destructive"
+                role="alert"
+              >
+                {errors.email.message}
+              </p>
+            )}
           </div>
         </div>
 
@@ -281,126 +183,86 @@ export function ContactForm() {
           </Label>
           <Textarea
             id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
             placeholder="Tell us more about your inquiry..."
             rows={6}
-            required
-            minLength={10}
-            disabled={status === "submitting"}
+            aria-invalid={Boolean(errors.message)}
+            aria-describedby="message-help message-error"
+            maxLength={MAX_MESSAGE_LENGTH}
             className="resize-none transition-all focus:ring-2 focus:ring-primary/20"
+            {...register("message")}
           />
-          <p className="text-xs text-muted-foreground">
-            {formData.message.length} / 5000 characters
-            {formData.message.length > 0 && formData.message.length < 10 && (
-              <span className="text-destructive ml-2">
-                (minimum 10 characters)
-              </span>
-            )}
-          </p>
+          <div
+            id="message-help"
+            className="flex items-center justify-between text-sm text-muted-foreground"
+          >
+            <span>Minimum 10 characters.</span>
+            <span>
+              {messageValue.length}/{MAX_MESSAGE_LENGTH}
+            </span>
+          </div>
+          {errors.message && (
+            <p
+              id="message-error"
+              className="text-sm text-destructive"
+              role="alert"
+            >
+              {errors.message.message}
+            </p>
+          )}
         </div>
 
-        {/* Error Message */}
         <AnimatePresence>
-          {error && (
+          {formError && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 flex items-start gap-3"
+              exit={{ opacity: 0, y: -4 }}
+              className="flex items-center gap-2 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+              role="alert"
             >
-              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm font-medium text-destructive">
-                  {error.message}
-                </p>
-                {error.remainingTime && (
-                  <p className="text-xs text-destructive/80 mt-1">
-                    Please wait {error.remainingTime} seconds before trying again.
-                  </p>
-                )}
-              </div>
+              <AlertCircle className="h-4 w-4" />
+              <span>{formError.message}</span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Success Message */}
         <AnimatePresence>
-          {status === "success" && (
+          {status === "success" && successMessage && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 flex items-start gap-3"
+              exit={{ opacity: 0, y: -4 }}
+              className="flex items-center gap-2 rounded-md bg-emerald-500/10 px-3 py-2 text-sm text-emerald-500"
+              role="status"
             >
-              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                  Message sent successfully! I&apos;ll get back to you soon.
-                </p>
-              </div>
+              <CheckCircle className="h-4 w-4" />
+              <span>{successMessage}</span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Submit Button */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">
+            I usually reply within 24 hours.
+          </p>
           <Button
             type="submit"
-            size="lg"
-            disabled={status === "submitting" || status === "success" || !recaptchaLoaded}
-            className="min-w-[140px] group"
+            disabled={isButtonDisabled}
+            className="inline-flex items-center gap-2"
           >
-            {status === "submitting" && (
+            {status === "submitting" || isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Sending...
               </>
-            )}
-            {status === "success" && (
+            ) : (
               <>
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Sent!
-              </>
-            )}
-            {status === "idle" && (
-              <>
-                <Send className="w-4 h-4 mr-2 transition-transform group-hover:translate-x-1" />
+                <Send className="h-4 w-4" />
                 Send Message
-              </>
-            )}
-            {status === "error" && (
-              <>
-                <AlertCircle className="w-4 h-4 mr-2" />
-                Try Again
               </>
             )}
           </Button>
         </div>
-
-        {/* reCAPTCHA Compliance Notice */}
-        <p className="text-xs text-muted-foreground text-center mt-4">
-          This site is protected by reCAPTCHA and the Google{" "}
-          <a
-            href="https://policies.google.com/privacy"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-foreground transition-colors"
-          >
-            Privacy Policy
-          </a>{" "}
-          and{" "}
-          <a
-            href="https://policies.google.com/terms"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-foreground transition-colors"
-          >
-            Terms of Service
-          </a>{" "}
-          apply.
-        </p>
       </form>
     </motion.div>
   );

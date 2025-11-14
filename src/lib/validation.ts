@@ -22,10 +22,22 @@ export const userSchema = z.object({
 })
 
 export const contactSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
+  name: z
+    .string()
+    .trim()
+    .min(2, 'Name is required')
+    .max(100, 'Name is too long'),
   email: z.string().email('Invalid email address'),
-  message: z.string().min(10, 'Message must be at least 10 characters').max(5000, 'Message is too long'),
-  recaptchaToken: z.string().min(1, 'reCAPTCHA verification is required'),
+  message: z
+    .string()
+    .trim()
+    .min(10, 'Message must be at least 10 characters')
+    .max(2000, 'Message is too long'),
+  honeypot: z
+    .string()
+    .max(0, 'Spam detected')
+    .optional()
+    .or(z.literal('')),
 })
 
 export type LoginFormData = z.infer<typeof loginSchema>
