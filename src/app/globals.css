@@ -216,6 +216,15 @@
     letter-spacing: 0.05em;
     color: hsl(var(--foreground));
   }
+  /* Prevent splash layout shift */
+  #splash-root {
+    opacity: 0;
+  }
+
+  html.splash-ready #splash-root {
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
 
   /* Body text - Inter Regular */
   p,

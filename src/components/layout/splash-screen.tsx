@@ -49,10 +49,9 @@ export default function SplashScreen() {
                 }}
               >
                 <motion.span
-                  className="absolute left-1/2 w-[0.44rem] h-[0.44rem] rounded-full 
+                  className="absolute top-[-3px] left-1/2 w-[0.44rem] h-[0.44rem] rounded-full 
              bg-[#121212]/85 dark:bg-white/85"
                   style={{
-                    top: "-3px",
                     transform: "translate(-50%, calc(-100% + 1px)) scale(1.05)",
                   }}
                   animate={{ scale: [1.05, 1.15, 1.05] }}
@@ -75,7 +74,7 @@ export default function SplashScreen() {
               className="text-center mb-12"
             >
               <motion.h1
-                className="text-3xl font-light tracking-[0.25em] dark:text-white text-black uppercase"
+                className="text-3xl font-medium tracking-[0.25em] dark:text-white text-black uppercase"
                 initial={{ letterSpacing: "0.5em", opacity: 0 }}
                 animate={{ letterSpacing: "0.25em", opacity: 1 }}
                 transition={{ duration: 1, ease: "easeOut" }}
