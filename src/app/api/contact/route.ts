@@ -62,17 +62,15 @@ function checkRateLimit(ip: string): { allowed: boolean; remainingTime?: number 
 
 export async function POST(request: NextRequest) {
   try {
-    // Check Web3Forms access key
-    // Note: Using server-side variable (not NEXT_PUBLIC) for security
-    // If you want to use NEXT_PUBLIC_WEB3FORMS_KEY, you can change this
-    const web3formsAccessKey = process.env.WEB3FORMS_ACCESS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+    // Check Web3Forms access key (server-side only, not NEXT_PUBLIC)
+    const web3formsAccessKey = process.env.WEB3FORMS_ACCESS_KEY;
     if (!web3formsAccessKey) {
-      console.error('WEB3FORMS_ACCESS_KEY or NEXT_PUBLIC_WEB3FORMS_KEY is not set in environment variables');
+      console.error('WEB3FORMS_ACCESS_KEY is not set in environment variables');
       return NextResponse.json(
         {
           error: 'Server configuration error. Please try again later.',
           details: process.env.NODE_ENV === 'development' 
-            ? 'WEB3FORMS_ACCESS_KEY or NEXT_PUBLIC_WEB3FORMS_KEY environment variable is not set' 
+            ? 'WEB3FORMS_ACCESS_KEY environment variable is not set' 
             : undefined,
         },
         { status: 500 }
@@ -96,12 +94,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse and validate request body
-    let body;
+    // Parse FormData from request
+    let formData;
     try {
-      body = await request.json();
+      formData = await request.formData();
     } catch (parseError) {
-      console.error('Failed to parse request body:', parseError);
+      console.error('Failed to parse FormData:', parseError);
       return NextResponse.json(
         {
           error: 'Invalid request format.',
@@ -110,7 +108,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validationResult = contactSchema.safeParse(body);
+    // Extract form fields
+    const name = formData.get('name')?.toString() || '';
+    const email = formData.get('email')?.toString() || '';
+    const message = formData.get('message')?.toString() || '';
+    const recaptchaToken = formData.get('recaptchaToken')?.toString() || '';
+
+    // Validate using Zod schema
+    const validationResult = contactSchema.safeParse({
+      name,
+      email,
+      message,
+      recaptchaToken,
+    });
 
     if (!validationResult.success) {
       return NextResponse.json(
@@ -121,8 +131,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    const { name, email, message, recaptchaToken } = validationResult.data;
 
     // Check for spam patterns in message
     if (detectSpamPatterns(message)) {
@@ -173,27 +181,21 @@ export async function POST(request: NextRequest) {
       referrer,
     });
 
-    // Prepare Web3Forms payload
-    const web3formsPayload = {
-      access_key: web3formsAccessKey,
-      subject: `New Contact Form Message from ${name}`,
-      from_name: name,
-      from_email: email,
-      message: emailHTML,
-      // Additional metadata as custom fields
-      _template: 'table', // Use table template for better formatting
-      _captcha: 'false', // We handle reCAPTCHA separately
-    };
+    // Create FormData for Web3Forms
+    const web3formsData = new FormData();
+    web3formsData.append('access_key', web3formsAccessKey);
+    web3formsData.append('subject', `New Contact Form Message from ${name}`);
+    web3formsData.append('from_name', name);
+    web3formsData.append('from_email', email);
+    web3formsData.append('message', emailHTML);
+    web3formsData.append('_template', 'table');
+    web3formsData.append('_captcha', 'false'); // We handle reCAPTCHA separately
 
     // Send to Web3Forms API
     try {
       const web3formsResponse = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(web3formsPayload),
+        body: web3formsData, // No Content-Type header - browser sets it automatically for FormData
       });
 
       let web3formsResult;
@@ -213,12 +215,23 @@ export async function POST(request: NextRequest) {
       // Web3Forms returns HTTP 200 even on errors, so check the success field
       if (!web3formsResult.success) {
         console.error('Web3Forms API error:', JSON.stringify(web3formsResult, null, 2));
+        
+        // Handle specific Web3Forms error types
+        let errorMessage = 'Failed to send email. Please try again later.';
+        if (web3formsResult.error === 'browser-error') {
+          errorMessage = 'Browser validation error. Please check your form data.';
+        } else if (web3formsResult.error === 'validation-error') {
+          errorMessage = 'Form validation failed. Please check all required fields.';
+        } else if (web3formsResult.message) {
+          errorMessage = web3formsResult.message;
+        }
+        
         return NextResponse.json(
           {
-            error: 'Failed to send email. Please try again later.',
-            details: web3formsResult.message || 'Unknown error',
+            error: errorMessage,
+            details: web3formsResult.error || 'Unknown error',
           },
-          { status: 500 }
+          { status: 400 }
         );
       }
 

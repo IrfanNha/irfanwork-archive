@@ -40,6 +40,7 @@ export function ContactForm() {
   const [error, setError] = useState<FormError | null>(null);
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
   const recaptchaScriptRef = useRef<HTMLScriptElement | null>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
 
@@ -136,39 +137,64 @@ export function ContactForm() {
         return;
       }
 
-      // Send to API
+      // Create FormData from form
+      if (!formRef.current) {
+        setError({
+          message: "Form reference not found. Please refresh the page.",
+        });
+        setStatus("error");
+        return;
+      }
+
+      const formDataToSend = new FormData(formRef.current);
+      formDataToSend.append("recaptchaToken", recaptchaToken);
+
+      // Send to API with FormData (no Content-Type header - browser sets it automatically)
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          recaptchaToken,
-        }),
+        body: formDataToSend,
       });
 
-      const data = await response.json();
+      // Parse response with error handling
+      let data;
+      try {
+        const text = await response.text();
+        data = text ? JSON.parse(text) : {};
+      } catch (parseError) {
+        console.error("Failed to parse API response:", parseError);
+        setError({
+          message: "Invalid response from server. Please try again.",
+        });
+        setStatus("error");
+        return;
+      }
 
       if (!response.ok) {
         // Handle rate limiting
         if (response.status === 429) {
           setError({
-            message: data.error || "Too many requests. Please wait a moment.",
-            remainingTime: data.remainingTime,
+            message: data?.error || "Too many requests. Please wait a moment.",
+            remainingTime: data?.remainingTime,
           });
         } else {
-          // Show detailed error in development, generic in production
-          const errorMessage = data.details && process.env.NODE_ENV === 'development'
-            ? `${data.error || "Failed to send message"}: ${data.details}`
-            : data.error || "Failed to send message. Please try again.";
+          // Handle Web3Forms-specific errors
+          let errorMessage = data?.error || "Failed to send message. Please try again.";
+          
+          // Map Web3Forms error types to user-friendly messages
+          if (data?.details === 'browser-error') {
+            errorMessage = "Browser validation error. Please check your form data and try again.";
+          } else if (data?.details === 'validation-error') {
+            errorMessage = "Form validation failed. Please check all required fields are filled correctly.";
+          } else if (data?.details && process.env.NODE_ENV === 'development') {
+            // Show detailed error in development
+            errorMessage = `${data?.error || "Failed to send message"}: ${data.details}`;
+          }
           
           console.error("Contact form error:", {
             status: response.status,
-            error: data.error,
-            details: data.details,
+            statusText: response.statusText,
+            error: data?.error,
+            details: data?.details,
             fullResponse: data,
           });
           
@@ -211,7 +237,7 @@ export function ContactForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
         {/* Name and Email Row */}
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
