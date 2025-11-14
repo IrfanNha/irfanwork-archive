@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { contactSchema } from '@/lib/validation';
 import { verifyRecaptcha, detectSpamPatterns } from '@/lib/recaptcha';
 import { generateContactEmailHTML } from '@/lib/email-template';
-import { SITE_CONFIG } from '@/constants/site';
 
 // Rate limiting: in-memory store (Map<IP, timestamp>)
 const rateLimitMap = new Map<string, number>();
@@ -64,10 +62,10 @@ function checkRateLimit(ip: string): { allowed: boolean; remainingTime?: number 
 
 export async function POST(request: NextRequest) {
   try {
-    // Check Resend API key first
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-      console.error('RESEND_API_KEY is not set');
+    // Check Web3Forms access key
+    const web3formsAccessKey = process.env.WEB3FORMS_ACCESS_KEY;
+    if (!web3formsAccessKey) {
+      console.error('WEB3FORMS_ACCESS_KEY is not set');
       return NextResponse.json(
         {
           error: 'Server configuration error. Please try again later.',
@@ -75,9 +73,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    // Initialize Resend with API key
-    const resend = new Resend(resendApiKey);
 
     // Get client information
     const ip = getClientIP(request);
@@ -158,19 +153,8 @@ export async function POST(request: NextRequest) {
 
     // Prepare email data
     const timestamp = new Date().toISOString();
-    const recipientEmail = SITE_CONFIG.social.email;
-
-    if (!recipientEmail) {
-      console.error('SITE_CONFIG.social.email is not set');
-      return NextResponse.json(
-        {
-          error: 'Server configuration error. Please try again later.',
-        },
-        { status: 500 }
-      );
-    }
-
-    // Generate email HTML
+    
+    // Generate HTML email content with metadata
     const emailHTML = generateContactEmailHTML({
       name,
       email,
@@ -181,31 +165,64 @@ export async function POST(request: NextRequest) {
       referrer,
     });
 
-    // Send email using Resend
-    // Use environment variable for "from" address, fallback to Resend's test domain
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Contact Form <onboarding@resend.dev>';
-    
+    // Prepare Web3Forms payload
+    const web3formsPayload = {
+      access_key: web3formsAccessKey,
+      subject: `New Contact Form Message from ${name}`,
+      from_name: name,
+      from_email: email,
+      message: emailHTML,
+      // Additional metadata as custom fields
+      _template: 'table', // Use table template for better formatting
+      _captcha: 'false', // We handle reCAPTCHA separately
+    };
+
+    // Send to Web3Forms API
     try {
-      const emailResult = await resend.emails.send({
-        from: fromEmail,
-        to: recipientEmail,
-        replyTo: email,
-        subject: `New Contact Form Message from ${name}`,
-        html: emailHTML,
+      const web3formsResponse = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(web3formsPayload),
       });
 
-      if (emailResult.error) {
-        console.error('Resend API error:', JSON.stringify(emailResult.error, null, 2));
+      let web3formsResult;
+      try {
+        web3formsResult = await web3formsResponse.json();
+      } catch (jsonError) {
+        console.error('Failed to parse Web3Forms response:', jsonError);
         return NextResponse.json(
           {
             error: 'Failed to send email. Please try again later.',
-            details: emailResult.error.message || 'Unknown error',
+            details: 'Invalid response from email service',
           },
           { status: 500 }
         );
       }
+
+      // Web3Forms returns HTTP 200 even on errors, so check the success field
+      if (!web3formsResult.success) {
+        console.error('Web3Forms API error:', JSON.stringify(web3formsResult, null, 2));
+        return NextResponse.json(
+          {
+            error: 'Failed to send email. Please try again later.',
+            details: web3formsResult.message || 'Unknown error',
+          },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Your message has been sent successfully!',
+        },
+        { status: 200 }
+      );
     } catch (emailError) {
-      console.error('Email sending exception:', emailError);
+      console.error('Web3Forms API exception:', emailError);
       return NextResponse.json(
         {
           error: 'Failed to send email. Please try again later.',
@@ -214,14 +231,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    return NextResponse.json(
-      {
-        success: true,
-        message: 'Your message has been sent successfully!',
-      },
-      { status: 200 }
-    );
   } catch (error) {
     console.error('Contact API error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -237,4 +246,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
