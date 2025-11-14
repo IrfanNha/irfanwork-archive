@@ -8,7 +8,6 @@ import { HomeCoreInterests } from "@/components/home/core-interest";
 export default function Homepage() {
   return (
     <main className="relative min-h-screen overflow-hidden">
-      {/* Background Blobs */}
 
       {/* Content */}
       <HomeHero />
