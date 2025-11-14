@@ -63,12 +63,17 @@ function checkRateLimit(ip: string): { allowed: boolean; remainingTime?: number 
 export async function POST(request: NextRequest) {
   try {
     // Check Web3Forms access key
-    const web3formsAccessKey = process.env.WEB3FORMS_ACCESS_KEY;
+    // Note: Using server-side variable (not NEXT_PUBLIC) for security
+    // If you want to use NEXT_PUBLIC_WEB3FORMS_KEY, you can change this
+    const web3formsAccessKey = process.env.WEB3FORMS_ACCESS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
     if (!web3formsAccessKey) {
-      console.error('WEB3FORMS_ACCESS_KEY is not set');
+      console.error('WEB3FORMS_ACCESS_KEY or NEXT_PUBLIC_WEB3FORMS_KEY is not set in environment variables');
       return NextResponse.json(
         {
           error: 'Server configuration error. Please try again later.',
+          details: process.env.NODE_ENV === 'development' 
+            ? 'WEB3FORMS_ACCESS_KEY or NEXT_PUBLIC_WEB3FORMS_KEY environment variable is not set' 
+            : undefined,
         },
         { status: 500 }
       );
@@ -132,10 +137,13 @@ export async function POST(request: NextRequest) {
     // Verify reCAPTCHA
     const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
     if (!recaptchaSecretKey) {
-      console.error('RECAPTCHA_SECRET_KEY is not set');
+      console.error('RECAPTCHA_SECRET_KEY is not set in environment variables');
       return NextResponse.json(
         {
           error: 'Server configuration error. Please try again later.',
+          details: process.env.NODE_ENV === 'development' 
+            ? 'RECAPTCHA_SECRET_KEY environment variable is not set' 
+            : undefined,
         },
         { status: 500 }
       );
