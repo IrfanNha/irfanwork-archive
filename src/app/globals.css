@@ -275,10 +275,26 @@
   animation: spin 1s linear infinite;
 }
 
-/* Hide reCAPTCHA badge */
-.grecaptcha-badge {
-  visibility: hidden !important;
-  opacity: 0 !important;
-  position: absolute !important;
-  bottom: -9999px !important;
+/* Fix for hCaptcha iframe on mobile - kriteria penting */
+iframe[src*="hcaptcha"],
+iframe[title*="hCaptcha"] {
+  max-width: 100% !important;
+}
+
+div[class*="h-captcha"] {
+  max-width: 100% !important;
+}
+
+@media (max-width: 380px) {
+  W iframe[src*="hcaptcha"],
+  iframe[title*="hCaptcha"] {
+    transform: scale(0.7) !important;
+  }
+}
+
+@media (max-width: 320px) {
+  iframe[src*="hcaptcha"],
+  iframe[title*="hCaptcha"] {
+    transform: scale(0.75) !important;
+  }
 }

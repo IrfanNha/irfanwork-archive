@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -73,20 +72,19 @@ const socialLinks = [
 
 export function ContactInfo() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6 w-full">
       {/* Contact Details Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="rounded-xl border border-border/60 bg-card/80 p-6 shadow-sm sm:p-7"
+        className="rounded-xl border border-border/60 bg-card/80 p-4 shadow-sm sm:p-6 md:p-7 w-full overflow-hidden"
       >
-        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-primary" />
-          Contact Information
+        <h3 className="text-lg sm:text-xl font-bold mb-5 sm:mb-6 flex items-center gap-2">
+          <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
+          <span>Contact Information</span>
         </h3>
-
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {contactDetails.map((detail, index) => (
             <motion.div
               key={detail.title}
@@ -95,20 +93,20 @@ export function ContactInfo() {
               transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
               className="group"
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 sm:gap-4">
                 <div className="flex-shrink-0">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <detail.icon className="w-5 h-5 text-primary" />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <detail.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground mb-1">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                     {detail.title}
                   </p>
                   {detail.link ? (
                     <a
                       href={detail.link}
-                      className="font-semibold text-foreground hover:text-primary transition-colors break-words"
+                      className="text-sm sm:text-base font-semibold text-foreground hover:text-primary transition-colors break-words block"
                       target={
                         detail.link.startsWith("http") ? "_blank" : undefined
                       }
@@ -121,7 +119,7 @@ export function ContactInfo() {
                       {detail.content}
                     </a>
                   ) : (
-                    <p className="font-semibold text-foreground">
+                    <p className="text-sm sm:text-base font-semibold text-foreground break-words">
                       {detail.content}
                     </p>
                   )}
@@ -140,17 +138,16 @@ export function ContactInfo() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="rounded-xl border border-border/60 bg-card/80 p-6 shadow-sm sm:p-7"
+        className="rounded-xl border border-border/60 bg-card/80 p-4 shadow-sm sm:p-6 md:p-7"
       >
-        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-primary" />
-          Follow Me
+        <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+          <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
+          <span>Follow Me</span>
         </h3>
-        <p className="text-sm text-muted-foreground mb-6">
+        <p className="text-xs sm:text-sm text-muted-foreground mb-5 sm:mb-6">
           Stay connected on social media
         </p>
-
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           {socialLinks.map((social, index) => (
             <motion.a
               key={social.name}
@@ -160,10 +157,12 @@ export function ContactInfo() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: 0.4 + index * 0.05 }}
-              className={`flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-all hover:shadow-md group ${social.color}`}
+              className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg border border-border hover:border-primary/50 transition-all hover:shadow-md group ${social.color}`}
             >
-              <social.icon className="w-5 h-5 text-muted-foreground group-hover:text-current transition-colors" />
-              <span className="text-sm font-medium">{social.name}</span>
+              <social.icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground group-hover:text-current transition-colors flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium truncate">
+                {social.name}
+              </span>
             </motion.a>
           ))}
         </div>
@@ -174,10 +173,10 @@ export function ContactInfo() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="rounded-xl border border-primary/30 bg-primary/5 p-6 text-center sm:text-left"
+        className="rounded-xl border border-primary/30 bg-primary/5 p-4 sm:p-6 text-center sm:text-left"
       >
-        <h3 className="text-lg font-bold mb-2">Quick Response</h3>
-        <p className="text-sm text-muted-foreground">
+        <h3 className="text-base sm:text-lg font-bold mb-2">Quick Response</h3>
+        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
           I typically respond within 24 hours during business days. For urgent
           matters, please reach out via email or phone directly.
         </p>
