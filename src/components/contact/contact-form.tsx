@@ -94,7 +94,7 @@ export default function ContactForm() {
       <div className="mb-6">
         <h2 className="text-2xl md:text-3xl font-bold mb-2">Send a Message</h2>
         <p className="text-muted-foreground">
-          Fill out the form below and I&apos;ll get back to you shortly.
+          Fill out the form below and I&apos;ll get back to you shortly
         </p>
       </div>
 
