@@ -30,16 +30,16 @@ export default function ContactPage() {
           </div>
 
           {/* Main Content */}
-          <div className="max-w-6xl mx-auto">
-            <div className="grid gap-8 lg:grid-cols-3 lg:gap-12">
-              {/* Contact Form - Takes 2 columns */}
-              <div className="lg:col-span-2">
-                <ContactForm />
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-10 lg:grid-cols-[2fr,1fr]">
+              {/* Contact Info appears first on mobile for quick access */}
+              <div className="order-1 lg:order-none">
+                <ContactInfo />
               </div>
 
-              {/* Contact Info Sidebar - Takes 1 column */}
-              <div className="lg:col-span-1">
-                <ContactInfo />
+              {/* Contact Form */}
+              <div className="order-2 lg:order-none">
+                <ContactForm />
               </div>
             </div>
           </div>

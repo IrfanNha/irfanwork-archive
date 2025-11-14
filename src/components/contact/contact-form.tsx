@@ -89,11 +89,11 @@ export default function ContactForm() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-card border border-border rounded-lg p-6 md:p-8 shadow-sm"
+      className="rounded-xl border border-border/60 bg-card/80 p-6 shadow-sm sm:p-8"
     >
-      <div className="mb-6">
-        <h2 className="text-2xl md:text-3xl font-bold mb-2">Send a Message</h2>
-        <p className="text-muted-foreground">
+      <div className="mb-6 space-y-2 text-center sm:text-left">
+        <h2 className="text-2xl font-bold md:text-3xl">Send a Message</h2>
+        <p className="text-sm text-muted-foreground sm:text-base">
           Fill out the form below and I&apos;ll get back to you shortly
         </p>
       </div>
@@ -108,7 +108,7 @@ export default function ContactForm() {
           <input tabIndex={-1} autoComplete="off" {...register("honeypot")} />
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="name">
               Name <span className="text-destructive">*</span>
@@ -164,12 +164,14 @@ export default function ContactForm() {
         </div>
 
         <div className="pt-2">
-          <HCaptcha
-            ref={captchaRef}
-            sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
-            reCaptchaCompat={false}
-            onVerify={onHCaptchaChange}
-          />
+          <div className="overflow-x-auto rounded-xl border border-border/50 bg-muted/30 p-3 sm:p-4">
+            <HCaptcha
+              ref={captchaRef}
+              sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
+              reCaptchaCompat={false}
+              onVerify={onHCaptchaChange}
+            />
+          </div>
           {errors["h-captcha-response"] && (
             <p className="text-sm text-destructive mt-2">
               {errors["h-captcha-response"].message}

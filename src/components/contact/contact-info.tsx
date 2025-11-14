@@ -79,7 +79,7 @@ export function ContactInfo() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="bg-card border border-border rounded-lg p-6 shadow-sm"
+        className="rounded-xl border border-border/60 bg-card/80 p-6 shadow-sm sm:p-7"
       >
         <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-primary" />
@@ -140,7 +140,7 @@ export function ContactInfo() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="bg-card border border-border rounded-lg p-6 shadow-sm"
+        className="rounded-xl border border-border/60 bg-card/80 p-6 shadow-sm sm:p-7"
       >
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-primary" />
@@ -150,7 +150,7 @@ export function ContactInfo() {
           Stay connected on social media
         </p>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {socialLinks.map((social, index) => (
             <motion.a
               key={social.name}
@@ -174,7 +174,7 @@ export function ContactInfo() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="border border-primary/20 rounded-lg p-6"
+        className="rounded-xl border border-primary/30 bg-primary/5 p-6 text-center sm:text-left"
       >
         <h3 className="text-lg font-bold mb-2">Quick Response</h3>
         <p className="text-sm text-muted-foreground">
