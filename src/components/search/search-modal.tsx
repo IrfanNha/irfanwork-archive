@@ -23,6 +23,7 @@ const getTypeIcon = (type: string) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getTypeColor = (type: string) => {
   // Minimal design - all types use same styling
   return "bg-muted text-foreground border-border";

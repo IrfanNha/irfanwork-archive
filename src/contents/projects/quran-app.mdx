@@ -29,14 +29,17 @@ keywords:
 
 ## Architecture
 
-<TechBadges items={["Next.js App Router", "Edge Runtime", "React Query", "Vercel KV"]} />
+<TechBadges
+  items={["Next.js App Router", "Edge Runtime", "React Query", "Vercel KV"]}
+/>
 
 Data comes from a cached Quran Cloud API. Each verse response is normalized into a light-weight store to avoid re-render storms.
 
 ## Experience
 
 <Callout variant="success" title="Accessibility">
-WCAG 2.2 AA compliant: adjustable line height, dyslexia-friendly fonts, and semantic controls for audio playback.
+  WCAG 2.2 AA compliant: adjustable line height, dyslexia-friendly fonts, and
+  semantic controls for audio playback.
 </Callout>
 
 The reading view relies on responsive CSS columns that collapse to a single column under 768px. Keyboard shortcuts mirror desktop e-readers.
@@ -46,4 +49,3 @@ The reading view relies on responsive CSS columns that collapse to a single colu
 - First contentful paint: 1.3s on Moto G4
 - Offline reading after first visit
 - 400+ monthly active readers
-

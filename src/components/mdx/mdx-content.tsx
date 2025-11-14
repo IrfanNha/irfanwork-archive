@@ -1,5 +1,4 @@
 import Image, { ImageProps } from "next/image";
-import Link from "next/link";
 import type { ReactElement, ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -117,12 +116,15 @@ const MdxImage = ({ alt = "", className, ...rest }: ImageProps) => (
   </figure>
 );
 
-const Anchor = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-  <Link
+const Anchor = ({
+  className,
+  ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+  <a
     {...props}
     className={cn(
       "font-medium text-foreground underline decoration-dotted underline-offset-4 transition hover:text-foreground/80",
-      props.className
+      className
     )}
   />
 );

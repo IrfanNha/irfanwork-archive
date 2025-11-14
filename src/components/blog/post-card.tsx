@@ -1,33 +1,33 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Calendar, Clock, ArrowRight } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Post } from '@/types'
-import { formatDate, readingTime } from '@/lib/utils'
-import { MOTION } from '@/constants'
+import { motion } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
+import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Post } from "@/types";
+import { formatDate, readingTime } from "@/lib/utils";
 
 interface PostCardProps {
-  post: Post
-  index?: number
+  post: Post;
+  index?: number;
 }
 
 export function PostCard({ post, index = 0 }: PostCardProps) {
-  const coverImage = Array.isArray(post.coverImage) 
-    ? post.coverImage[0] 
-    : (post.coverImage as any)?.data?.[0] || post.coverImage
-  
-  const category = Array.isArray(post.categories) 
-    ? post.categories[0] 
-    : (post.categories as any)?.data?.[0] || post.categories?.[0]
-  
-  const contentText = post.content
-    ?.map(block => block.children?.map(child => child.text).join(' '))
-    .join(' ') || ''
-  
-  const estimatedReadingTime = readingTime(contentText + (post.excerpt || ''))
+  const coverImage = Array.isArray(post.coverImage)
+    ? post.coverImage[0]
+    : (post.coverImage as any)?.data?.[0] || post.coverImage;
+
+  const category = Array.isArray(post.categories)
+    ? post.categories[0]
+    : (post.categories as any)?.data?.[0] || post.categories?.[0];
+
+  const contentText =
+    post.content
+      ?.map((block) => block.children?.map((child) => child.text).join(" "))
+      .join(" ") || "";
+
+  const estimatedReadingTime = readingTime(contentText + (post.excerpt || ""));
 
   return (
     <motion.article
@@ -37,7 +37,7 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
       whileHover={{ x: 4 }}
       className="group"
     >
-      <Link 
+      <Link
         href={`/blog/${post.slug}`}
         className="block border-b border-border py-8 transition-colors hover:bg-muted/30"
       >
@@ -47,8 +47,8 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
             {/* Meta Information */}
             <div className="flex items-center gap-4 text-xs text-muted-foreground font-light tracking-wide uppercase">
               {category && (
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className="border-border text-muted-foreground font-normal text-xs px-2 py-0.5"
                 >
                   {category.name}
@@ -121,5 +121,5 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
         </div>
       </Link>
     </motion.article>
-  )
+  );
 }
