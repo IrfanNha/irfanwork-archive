@@ -270,43 +270,39 @@ export default async function ProjectDetailPage({ params }: PageParams) {
             </article>
 
             <footer className="border-t border-border/40 pt-10">
-              <div className="flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
-                {adjacent.previous ? (
+              <div className="grid gap-4 md:grid-cols-2">
+                {adjacent.previous && (
                   <Link
                     href={`/p/${adjacent.previous.slug}`}
-                    className="group flex items-center gap-4 text-left"
+                    className="group flex w-full items-center gap-4 rounded-xl border border-border/30 bg-background/80 px-4 py-3 text-left transition hover:border-border/60"
                   >
                     <ArrowLeft className="h-5 w-5 text-muted-foreground transition group-hover:-translate-x-1" />
                     <div>
                       <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
                         Previous
                       </p>
-                      <p className="text-lg font-semibold text-foreground">
+                      <p className="text-base font-semibold text-foreground">
                         {adjacent.previous.title}
                       </p>
                     </div>
                   </Link>
-                ) : (
-                  <div />
                 )}
 
-                {adjacent.next ? (
+                {adjacent.next && (
                   <Link
                     href={`/p/${adjacent.next.slug}`}
-                    className="group flex items-center gap-4 text-left"
+                    className="group flex w-full items-center justify-between gap-4 rounded-xl border border-border/30 bg-background/80 px-4 py-3 text-left transition hover:border-border/60"
                   >
                     <div className="text-right">
                       <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
                         Next
                       </p>
-                      <p className="text-lg font-semibold text-foreground">
+                      <p className="text-base font-semibold text-foreground">
                         {adjacent.next.title}
                       </p>
                     </div>
                     <ArrowRight className="h-5 w-5 text-muted-foreground transition group-hover:translate-x-1" />
                   </Link>
-                ) : (
-                  <div />
                 )}
               </div>
             </footer>
