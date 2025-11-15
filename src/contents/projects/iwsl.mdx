@@ -55,9 +55,41 @@ I wanted a shortlink solution that provides branded URLs, full control over meta
 - **Vercel**: Hosting with Edge Functions and KV storage for real-time analytics.
 
 ```tsx
-<form action={createLink}>
-  <Input name="target" placeholder="https://example.com/article" required />
-  <Button>Generate Link</Button>
+<form
+  onSubmit={handleSubmit}
+  className="flex flex-col gap-4"
+  aria-label="Shortlink generator form"
+>
+  <Input
+    value={url}
+    onChange={(event) => setUrl(event.target.value)}
+    placeholder="https://contoh.com/produk/123"
+    className="h-12 rounded-md border-[var(--color-border-strong)] bg-[var(--color-surface-soft)] text-base text-[var(--color-text)] focus-visible:border-[var(--color-accent)] focus-visible:ring-[var(--color-accent)]"
+    type="url"
+    required
+  />
+  {preview && (
+    <div className="animate-fade-up rounded-md border border-dashed border-[var(--color-border)] bg-[var(--color-surface-soft)] px-4 py-3 text-xs uppercase tracking-[0.3em] text-[var(--color-muted)]">
+      <span className="font-semibold text-[var(--color-text)]">
+        {preview.hostname}
+      </span>{" "}
+      <span className="rounded-full bg-[var(--color-border)] px-2 py-1 text-[0.65rem] uppercase tracking-[0.4em] text-[var(--color-muted)]">
+        {preview.protocol}
+      </span>
+    </div>
+  )}
+
+  <Button
+    type="submit"
+    disabled={disableSubmit}
+    className="h-12 w-full rounded-md bg-[var(--color-accent)] text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-surface)] transition hover:opacity-90 disabled:opacity-60 md:text-base md:tracking-[0.35em]"
+  >
+    {isSubmitting
+      ? "Generating…"
+      : visitorLoading
+        ? "Initialising…"
+        : "Generate Shortlink"}
+  </Button>
 </form>
 ```
 
