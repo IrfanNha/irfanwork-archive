@@ -3,8 +3,8 @@ id: "5"
 slug: "iwsl"
 title: "IW ShortLink"
 excerpt: "Self-hosted link shortener with analytics, abuse protection, and fingerprint-based visitor tracking."
-date: "2025-01-02"
-updated: "2025-02-10"
+date: "2025-01-10"
+updated: "2025-12-10"
 tech:
   - Next.js
   - TypeScript
@@ -19,34 +19,212 @@ keywords:
   - shortlink
   - analytics
   - fingerprint
+  - tracking
+  - anti-abuse
 ---
 
-## Why build a custom shortener?
+## Why Build a Custom Shortener?
 
-I wanted branded links, custom metadata, and the ability to reject abusive payloads before they propagate.
+I wanted a shortlink solution that provides branded URLs, full control over metadata, and the ability to reject abusive or automated submissions before they propagate. Traditional services often lack these capabilities or limit analytics and customization.
 
-<Callout variant="danger" title="Anti-abuse">
-HCaptcha + FingerprintJS prevents bot submissions, while rate limiting lives on Vercel Edge middleware.
+<Callout variant="danger" title="Anti-Abuse">
+  HCaptcha combined with FingerprintJS ensures bot submissions are blocked,
+  while rate limiting is enforced at the Vercel Edge Middleware level to prevent
+  abuse at scale.
 </Callout>
 
-## Stack
+## Tech Stack
 
-<TechBadges items={["Next.js", "tRPC-like RPC layer", "Vercel KV", "Upstash Ratelimit"]} />
+<TechBadges
+  items={[
+    "Next.js",
+    "TypeScript",
+    "Tailwind CSS",
+    "shadcn/ui",
+    "FingerprintJS",
+    "MockAPI",
+    "Vercel",
+  ]}
+/>
+
+- **Next.js**: Server-side rendering, API routes, and optimized front-end.
+- **TypeScript**: Type safety across the codebase.
+- **Tailwind CSS & shadcn/ui**: Modern, responsive, and reusable UI components.
+- **FingerprintJS**: Persistent visitor identification without storing PII.
+- **MockAPI**: Backend storage for shortlinks and click tracking.
+- **Vercel**: Hosting with Edge Functions and KV storage for real-time analytics.
 
 ```tsx
 <form action={createLink}>
-  <Input
-    name="target"
-    placeholder="https://example.com/article"
-    required
-  />
+  <Input name="target" placeholder="https://example.com/article" required />
   <Button>Generate Link</Button>
 </form>
 ```
 
-## Results
+## Features
 
-- Tracks device + geo without storing PII
-- Realtime dashboard powered by Edge Functions
-- Custom domains supported via DNS challenge workflow
+- **Visitor Tracking**: Device fingerprint + geolocation tracking without storing personal data.
+- **Anti-Abuse Protection**: Bot prevention with HCaptcha, rate limiting via Edge Middleware.
+- **Realtime Dashboard**: Monitor clicks and analytics powered by Edge Functions.
+- **Custom Domains**: Supports adding custom domains with DNS challenge verification.
+- **Shortlink Analytics**: Click count, last visited timestamp, and unique visitor identification.
+- **Self-Hosted**: Fully controllable environment using MockAPI and FingerprintJS.
 
+## Project Structure
+
+```
+src
+├─ app
+│  ├─ [code]           # Shortlink dynamic page
+│  ├─ api              # API routes
+│  ├─ dashboard         # Dashboard pages
+│  ├─ globals.css       # Global styles
+│  ├─ layout.tsx        # App layout
+│  └─ page.tsx          # Home page
+├─ components
+│  ├─ dashboard         # Dashboard components
+│  ├─ layout            # Layout components
+│  ├─ shortener         # URL shortener components
+│  ├─ ui                # Generic UI components
+│  └─ Providers.tsx     # Context providers
+├─ constants
+│  ├─ api.ts            # API base URLs
+│  ├─ links.ts          # Link-related constants
+│  └─ theme.ts          # Theme constants
+├─ contexts
+│  ├─ theme-context.tsx
+│  └─ visitor-context.tsx
+├─ lib
+│  ├─ fingerprint.ts    # FingerprintJS integration
+│  ├─ mockapi.ts        # MockAPI helper functions
+│  └─ utils.ts
+└─ styles               # Additional styles
+```
+
+## Environment Variables
+
+Create a `.env.local` file:
+
+```env
+NEXT_PUBLIC_BASE_URL=your_base_url_here
+NEXT_PUBLIC_MOCKAPI_URL=https://<your_mockapi>.mockapi.io/api/v1
+NEXT_PUBLIC_FINGERPRINT_KEY=your_fingerprint_key_here
+```
+
+- `NEXT_PUBLIC_BASE_URL`: Base URL of the deployed application.
+- `NEXT_PUBLIC_MOCKAPI_URL`: MockAPI endpoint for storing shortlink data.
+- `NEXT_PUBLIC_FINGERPRINT_KEY`: FingerprintJS key (can use open-source for development).
+
+## MockAPI Data Schema
+
+The `links` endpoint stores shortlink records:
+
+```json
+{
+  "id": "7",
+  "code": "p8mcvn",
+  "originalUrl": "https://medium.com/@irfannh/rasionalisasi-yang-dibalut-makna-ef55dda782c0",
+  "visitorId": "c6cd88b240b25e7d77d4806f05800b7f",
+  "clickCount": 0,
+  "createdAt": "2025-11-10T07:24:29.232Z",
+  "lastClickedAt": ""
+}
+```
+
+## FingerprintJS Integration
+
+```ts
+export const VISITOR_STORAGE_KEY = "iwsl_visitor_id";
+
+let fpPromise: Promise<import("@fingerprintjs/fingerprintjs").Agent> | null =
+  null;
+
+async function loadFingerprint(): Promise<
+  import("@fingerprintjs/fingerprintjs").Agent
+> {
+  if (typeof window === "undefined")
+    throw new Error("FingerprintJS can only be used in the browser.");
+  if (!fpPromise)
+    fpPromise = import("@fingerprintjs/fingerprintjs").then((module) =>
+      module.load()
+    );
+  return fpPromise;
+}
+
+export async function getVisitorId(): Promise<string> {
+  const cached = readStorage();
+  if (cached) return cached;
+  const agent = await loadFingerprint();
+  const result = await agent.get();
+  writeStorage(result.visitorId);
+  return result.visitorId;
+}
+
+function readStorage(): string | null {
+  try {
+    return window.localStorage.getItem(VISITOR_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(value: string) {
+  try {
+    window.localStorage.setItem(VISITOR_STORAGE_KEY, value);
+  } catch {
+    /* ignore */
+  }
+}
+```
+
+- Stores visitor ID in `localStorage` to maintain persistent tracking.
+- Only works in browser environments.
+
+## Getting Started
+
+Install dependencies:
+
+```bash
+npm install
+# or
+yarn
+# or
+pnpm install
+```
+
+Start development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view your app.
+
+## Deployment
+
+Deploy effortlessly on **Vercel**:
+
+- Connect your GitHub repository to Vercel.
+- Set the environment variables in the Vercel dashboard.
+- Deploy; Next.js static optimizations and serverless API routes are supported.
+
+[Next.js Deployment Docs](https://nextjs.org/docs/app/building-your-application/deploying)
+
+## Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
+- [FingerprintJS Docs](https://fingerprintjs.com/docs)
+- [MockAPI Docs](https://mockapi.io/docs)
+
+## License
+
+[MIT License](LICENSE)
+
+```
+
+```
