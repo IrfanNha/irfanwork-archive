@@ -119,11 +119,21 @@ NEXT_PUBLIC_FINGERPRINT_KEY=your_fingerprint_key_here
 
 The `links` endpoint stores shortlink records:
 
+| Field           | Type      | Description                          |
+| --------------- | --------- | ------------------------------------ |
+| `id`            | Object ID | Unique identifier for the record     |
+| `code`          | String    | Shortlink code                       |
+| `originalUrl`   | String    | Original URL being shortened         |
+| `visitorId`     | String    | Visitor identifier (FingerprintJS)   |
+| `clickCount`    | Number    | Number of times the link was clicked |
+| `createdAt`     | String    | ISO timestamp of creation            |
+| `lastClickedAt` | String    | ISO timestamp of last click          |
+
 ```json
 {
   "id": "7",
   "code": "p8mcvn",
-  "originalUrl": "https://medium.com/@irfannh/rasionalisasi-yang-dibalut-makna-ef55dda782c0",
+  "originalUrl": "https://irfanwork.vercel.app/p/iwsl",
   "visitorId": "c6cd88b240b25e7d77d4806f05800b7f",
   "clickCount": 0,
   "createdAt": "2025-11-10T07:24:29.232Z",

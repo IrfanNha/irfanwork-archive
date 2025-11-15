@@ -23,10 +23,7 @@ import {
   getProjectSlugs,
   formatProjectDate,
 } from "@/lib/mdx";
-import {
-  buildProjectMetadata,
-  buildProjectStructuredData,
-} from "@/lib/meta";
+import { buildProjectMetadata, buildProjectStructuredData } from "@/lib/meta";
 
 type PageParams = {
   params: Promise<{
@@ -42,7 +39,8 @@ type RepoStats = {
 const fetchRepoStats = async (repoUrl?: string): Promise<RepoStats> => {
   if (!repoUrl || !repoUrl.includes("github.com")) return null;
 
-  const [, owner, repo] = repoUrl.match(/github\.com\/([^/]+)\/([^/?#]+)/) ?? [];
+  const [, owner, repo] =
+    repoUrl.match(/github\.com\/([^/]+)\/([^/?#]+)/) ?? [];
   if (!owner || !repo) return null;
 
   try {
@@ -260,9 +258,41 @@ export default async function ProjectDetailPage({ params }: PageParams) {
                 </div>
               )}
 
-              <Suspense fallback={<div className="text-sm text-muted-foreground">Rendering content…</div>}>
+              <Suspense
+                fallback={
+                  <div className="text-sm text-muted-foreground">
+                    Rendering content…
+                  </div>
+                }
+              >
                 <div className="rounded-xl border border-border/30 bg-background/90 p-6 md:p-10 shadow">
-                  <div className="prose prose-neutral max-w-none dark:prose-invert">
+                  <div
+                    className="prose prose-lg prose-neutral max-w-none dark:prose-invert
+                    [&>*+*]:mt-5
+                    [&_h2]:mt-10 [&_h2]:mb-1 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:scroll-mt-20 [&_h2:first-child]:mt-0
+                    [&_h3]:mt-10 [&_h3]:mb-5 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:scroll-mt-20
+                    [&_h4]:mt-8 [&_h4]:mb-4 [&_h4]:text-lg [&_h4]:font-semibold [&_h4]:scroll-mt-20
+                    [&_p]:my-5 [&_p]:leading-7
+                    [&_ul]:my-6 [&_ul]:list-disc [&_ul]:pl-7
+                    [&_ol]:my-6 [&_ol]:list-decimal [&_ol]:pl-7
+                    [&_li]:my-1 [&_li]:pl-1.5
+                    [&_li>p]:my-3
+                    [&_ul_ul]:my-3 [&_ul_ol]:my-3 [&_ol_ul]:my-3 [&_ol_ol]:my-3
+                    [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:no-underline
+                    [&_strong]:font-semibold [&_strong]:text-foreground
+                    [&_code]:text-sm [&_code]:font-medium [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:before:content-[''] [&_code]:after:content-['']
+                    [&_pre]:my-7 [&_pre]:p-5 [&_pre]:bg-muted [&_pre]:rounded-lg [&_pre]:overflow-x-auto
+                    [&_pre_code]:text-sm [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:leading-relaxed
+                    [&_blockquote]:my-7 [&_blockquote]:pl-5 [&_blockquote]:border-l-4 [&_blockquote]:border-border [&_blockquote]:italic [&_blockquote]:text-muted-foreground
+                    [&_hr]:my-12 [&_hr]:border-0 [&_hr]:border-t [&_hr]:border-border
+                    [&_img]:my-8 [&_img]:rounded-lg
+                    [&_table]:block [&_table]:overflow-x-auto [&_table]:whitespace-nowrap
+                    [&_table]:border [&_table]:border-border [&_table]:rounded-lg
+                    [&_th]:px-4 [&_th]:py-2.5 [&_th]:bg-muted/50 [&_th]:font-semibold [&_th]:text-left [&_th]:border-b [&_th]:border-border
+                    [&_td]:px-4 [&_td]:py-2.5 [&_td]:border-b [&_td]:border-border
+                    [&_tbody_tr:last-child_td]:border-b-0
+                  "
+                  >
                     {project.content}
                   </div>
                 </div>
@@ -312,4 +342,3 @@ export default async function ProjectDetailPage({ params }: PageParams) {
     </>
   );
 }
-
