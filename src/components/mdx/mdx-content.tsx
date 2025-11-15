@@ -64,12 +64,12 @@ const Callout = ({ title, variant = "info", children }: CalloutProps) => {
         config.style
       )}
     >
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-start">
         <div className="flex items-center gap-2 sm:block">
           <Icon className="h-5 w-5 flex-shrink-0" />
           {title && <p className="font-semibold sm:hidden">{title}</p>}
         </div>
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 space-y-1">
           {title && <p className="hidden font-semibold sm:block">{title}</p>}
           <div className="text-sm leading-relaxed text-muted-foreground md:text-base">
             {children}

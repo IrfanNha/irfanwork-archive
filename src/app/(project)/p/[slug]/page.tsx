@@ -265,7 +265,7 @@ export default async function ProjectDetailPage({ params }: PageParams) {
                   </div>
                 }
               >
-                <div className="rounded-xl border border-border/30 bg-background/90 p-6 md:p-10 shadow">
+                <div className="rounded-xl md:border md:border-border/30 bg-background/90 p-0 md:p-10 shadow">
                   <div
                     className="prose prose-lg prose-neutral max-w-none dark:prose-invert
                     [&>*+*]:mt-5
