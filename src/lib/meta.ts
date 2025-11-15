@@ -1,68 +1,104 @@
-import type { Metadata } from "next";
-import { SITE_CONFIG } from "@/constants/site";
-import type { ProjectMeta } from "@/types/project";
+// lib/meta.ts
+import type { Metadata } from 'next'
+import type { ProjectMeta } from '@/types/project'
 
-const baseUrl = SITE_CONFIG.url?.replace(/\/$/, "") ?? "https://irfanwork.cloud";
+const SITE_NAME = 'Irfan Nuha'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://irfanwork.vercel.app'
 
-export const absoluteUrl = (path = "/") =>
-  `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
-
-export const buildProjectStructuredData = (project: ProjectMeta) => {
-  const canonical = absoluteUrl(`/p/${project.slug}`);
-  const banner = project.banner.startsWith("http")
-    ? project.banner
-    : absoluteUrl(project.banner);
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: project.title,
-    description: project.excerpt,
-    url: canonical,
-    image: banner,
-    datePublished: project.date,
-    dateModified: project.updated ?? project.date,
-    keywords: project.keywords ?? project.tech,
-    author: {
-      "@type": "Person",
-      name: SITE_CONFIG.author,
-    },
-  };
-};
-
-export const buildProjectMetadata = (project: ProjectMeta): Metadata => {
-  const canonical = absoluteUrl(`/p/${project.slug}`);
-  const banner = project.banner.startsWith("http")
-    ? project.banner
-    : absoluteUrl(project.banner);
+export function buildProjectMetadata(project: ProjectMeta): Metadata {
+  const title = `${project.title} | ${SITE_NAME}`
+  const description = project.excerpt
+  const url = `${SITE_URL}/p/${project.slug}`
+  const imageUrl = project.banner.startsWith('http') 
+    ? project.banner 
+    : `${SITE_URL}${project.banner}`
 
   return {
-    title: `${project.title} – Project by ${SITE_CONFIG.author}`,
-    description: project.excerpt,
-    keywords: project.keywords ?? project.tech,
-    alternates: {
-      canonical,
-    },
+    title,
+    description,
+    keywords: [
+      ...(project.keywords || []),
+      ...(project.tags || []),
+      ...project.tech,
+      project.category,
+      'portfolio',
+      'project',
+    ],
+    authors: [{ name: SITE_NAME }],
+    creator: SITE_NAME,
+    publisher: SITE_NAME,
     openGraph: {
-      type: "article",
+      type: 'article',
       title: project.title,
-      description: project.excerpt,
-      url: canonical,
+      description,
+      url,
+      siteName: SITE_NAME,
       images: [
         {
-          url: banner,
+          url: imageUrl,
           width: 1200,
           height: 630,
+          alt: project.title,
         },
       ],
-      tags: project.tags ?? project.tech,
+      publishedTime: project.date,
+      modifiedTime: project.updated || project.date,
+      authors: [SITE_NAME],
+      tags: [...(project.tags || []), ...project.tech],
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title: project.title,
-      description: project.excerpt,
-      images: [banner],
+      description,
+      images: [imageUrl],
+      creator: '@irfannuha',
     },
-  };
-};
+    alternates: {
+      canonical: url,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+  }
+}
 
+export function buildProjectStructuredData(project: ProjectMeta) {
+  const url = `${SITE_URL}/p/${project.slug}`
+  const imageUrl = project.banner.startsWith('http') 
+    ? project.banner 
+    : `${SITE_URL}${project.banner}`
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: project.title,
+    description: project.excerpt,
+    url,
+    image: imageUrl,
+    datePublished: project.date,
+    dateModified: project.updated || project.date,
+    author: {
+      '@type': 'Person',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    keywords: [...(project.keywords || []), ...project.tech].join(', '),
+    programmingLanguage: project.tech,
+    codeRepository: project.repo,
+    ...(project.demo && { applicationCategory: 'WebApplication' }),
+    ...(project.demo && { url: project.demo }),
+    inLanguage: 'en',
+    about: {
+      '@type': 'Thing',
+      name: project.category,
+    },
+  }
+}

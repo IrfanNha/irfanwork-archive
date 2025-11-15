@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { strapiAPI } from '@/lib/api/strapi'
 import { PROJECTS } from '@/constants/projects'
+import { getAllProjectsMeta } from '@/lib/mdx'
 
 interface SearchResult {
   id: string
   title: string
   description: string
   url: string
-  type: 'blog' | 'project' | 'page'
+  type: 'blog' | 'project' | 'page' | 'mdx-project'
   category?: string
   publishedAt?: string
 }
 
 // Cache for API responses (in-memory cache)
 const apiCache = new Map<string, { data: SearchResult[], timestamp: number }>()
-const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+const CACHE_TTL = 5 * 60 * 1000
 
 function getCachedResults(query: string): SearchResult[] | null {
   const cached = apiCache.get(query)
@@ -27,11 +28,10 @@ function getCachedResults(query: string): SearchResult[] | null {
 function setCachedResults(query: string, data: SearchResult[]): void {
   apiCache.set(query, { data, timestamp: Date.now() })
   
-  // Clean old cache entries if cache gets too large
   if (apiCache.size > 100) {
     const entries = Array.from(apiCache.entries())
     const sortedEntries = entries.sort((a, b) => a[1].timestamp - b[1].timestamp)
-    const toDelete = sortedEntries.slice(0, 50) // Remove oldest 50 entries
+    const toDelete = sortedEntries.slice(0, 50)
     toDelete.forEach(([key]) => apiCache.delete(key))
   }
 }
@@ -84,7 +84,36 @@ export async function GET(request: NextRequest) {
       console.error('Blog search error:', error)
     }
 
-    // Search projects (static data, no API call needed)
+    // Search MDX projects from /p/[slug]
+    try {
+      const mdxProjects = await getAllProjectsMeta()
+      
+      const mdxProjectResults = mdxProjects.filter(project => {
+        const titleMatch = project.title.toLowerCase().includes(searchQuery)
+        const excerptMatch = project.excerpt.toLowerCase().includes(searchQuery)
+        const techMatch = project.tech.some(tech => tech.toLowerCase().includes(searchQuery))
+        const tagsMatch = project.tags?.some(tag => tag.toLowerCase().includes(searchQuery)) || false
+        const keywordsMatch = project.keywords?.some(kw => kw.toLowerCase().includes(searchQuery)) || false
+        
+        return titleMatch || excerptMatch || techMatch || tagsMatch || keywordsMatch
+      })
+
+      mdxProjectResults.forEach((project) => {
+        results.push({
+          id: `mdx-project-${project.id}`,
+          title: project.title,
+          description: project.excerpt,
+          url: `/p/${project.slug}`,
+          type: 'mdx-project',
+          category: project.category,
+          publishedAt: project.date
+        })
+      })
+    } catch (error) {
+      console.error('MDX projects search error:', error)
+    }
+
+    // Search projects (static data from constants)
     const projectResults = PROJECTS.filter(project =>
       project.name.toLowerCase().includes(searchQuery) ||
       project.description.toLowerCase().includes(searchQuery) ||
@@ -131,7 +160,21 @@ export async function GET(request: NextRequest) {
         description: 'Read my latest articles and thoughts',
         url: '/blog',
         type: 'page' as const
-      }
+      },
+      {
+        id: 'page-terms',
+        title: 'Terms & Conditions',
+        description: 'Understand the terms, conditions, and guidelines for using this website and its services.',
+        url: '/terms',
+        type: 'page' as const
+      },
+      {
+        id: 'page-privacy',
+        title: 'Privacy & Policy',
+        description: 'Read how this website handles data collection, usage, cookies, and your privacy rights.',
+        url: '/privacy',
+        type: 'page' as const
+      },
     ]
 
     const pageResults = pages.filter(page =>
@@ -141,7 +184,6 @@ export async function GET(request: NextRequest) {
 
     results.push(...pageResults)
 
-    // Sort results by relevance (exact matches first, then partial matches)
     const sortedResults = results.sort((a, b) => {
       const aTitleMatch = a.title.toLowerCase().includes(searchQuery)
       const bTitleMatch = b.title.toLowerCase().includes(searchQuery)
@@ -149,12 +191,21 @@ export async function GET(request: NextRequest) {
       if (aTitleMatch && !bTitleMatch) return -1
       if (!aTitleMatch && bTitleMatch) return 1
       
+      const typeOrder = { 'mdx-project': 0, 'blog': 1, 'project': 2, 'page': 3 }
+      const aOrder = typeOrder[a.type] ?? 4
+      const bOrder = typeOrder[b.type] ?? 4
+      
+      if (aOrder !== bOrder) return aOrder - bOrder
+      
+      if (a.publishedAt && b.publishedAt) {
+        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      }
+      
       return 0
     })
 
-    const finalResults = sortedResults.slice(0, 10) // Limit to 10 results
+    const finalResults = sortedResults.slice(0, 10) 
 
-    // Cache the results
     setCachedResults(searchQuery, finalResults)
 
     return NextResponse.json({ 
