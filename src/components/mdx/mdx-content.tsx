@@ -1,50 +1,84 @@
 import Image, { ImageProps } from "next/image";
 import { isValidElement, type ReactNode } from "react";
+import {
+  Info,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Lightbulb,
+  type LucideIcon,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { CodeBlock } from "@/components/blog/code-block";
 
-type CalloutVariant = "info" | "success" | "warning" | "danger";
+type CalloutVariant = "info" | "success" | "warning" | "danger" | "tip";
 
-const CALLOUT_STYLES: Record<CalloutVariant, string> = {
-  info: "border-blue-500/30 bg-blue-500/5 text-blue-600 dark:text-blue-400",
-  success:
-    "border-emerald-500/30 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400",
-  warning:
-    "border-amber-500/30 bg-amber-500/5 text-amber-700 dark:text-amber-300",
-  danger:
-    "border-rose-500/30 bg-rose-500/5 text-rose-600 dark:text-rose-400",
+const CALLOUT_CONFIG: Record<
+  CalloutVariant,
+  {
+    style: string;
+    icon: LucideIcon;
+  }
+> = {
+  info: {
+    style: "border-blue-500/30 bg-blue-500/5 text-blue-600 dark:text-blue-400",
+    icon: Info,
+  },
+  success: {
+    style:
+      "border-emerald-500/30 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400",
+    icon: CheckCircle2,
+  },
+  warning: {
+    style:
+      "border-amber-500/30 bg-amber-500/5 text-amber-700 dark:text-amber-300",
+    icon: AlertTriangle,
+  },
+  danger: {
+    style: "border-rose-500/30 bg-rose-500/5 text-rose-600 dark:text-rose-400",
+    icon: XCircle,
+  },
+  tip: {
+    style:
+      "border-violet-500/30 bg-violet-500/5 text-violet-600 dark:text-violet-400",
+    icon: Lightbulb,
+  },
 };
 
 interface CalloutProps {
   title?: string;
-  icon?: string;
   variant?: CalloutVariant;
   children: ReactNode;
 }
 
-const Callout = ({
-  title,
-  icon = "💡",
-  variant = "info",
-  children,
-}: CalloutProps) => (
-  <div
-    className={cn(
-      "my-6 rounded-2xl border px-5 py-4 text-sm shadow-sm",
-      CALLOUT_STYLES[variant]
-    )}
-  >
-    <div className="flex items-start gap-3">
-      <span className="text-xl leading-none">{icon}</span>
-      <div className="space-y-2">
-        {title && <p className="font-semibold">{title}</p>}
-        <div className="text-muted-foreground text-base">{children}</div>
+const Callout = ({ title, variant = "info", children }: CalloutProps) => {
+  const config = CALLOUT_CONFIG[variant];
+  const Icon = config.icon;
+
+  return (
+    <div
+      className={cn(
+        "my-6 rounded-xl border px-4 py-4 shadow-sm md:px-5",
+        config.style
+      )}
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+        <div className="flex items-center gap-2 sm:block">
+          <Icon className="h-5 w-5 flex-shrink-0" />
+          {title && <p className="font-semibold sm:hidden">{title}</p>}
+        </div>
+        <div className="flex-1 space-y-2">
+          {title && <p className="hidden font-semibold sm:block">{title}</p>}
+          <div className="text-sm leading-relaxed text-muted-foreground md:text-base">
+            {children}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 interface TechBadgesProps {
   items: string[];
@@ -98,7 +132,7 @@ const Video = ({ src, title = "Project demo", caption }: VideoProps) => (
 
 const MdxImage = ({ alt = "", className, ...rest }: ImageProps) => (
   <figure className="my-8 space-y-3">
-    <div className="overflow-hidden rounded-3xl border border-border/60">
+    <div className="overflow-hidden rounded-xl border border-border/60">
       <Image
         {...rest}
         alt={alt}
@@ -140,8 +174,7 @@ const Pre = (props: React.HTMLAttributes<HTMLPreElement>) => {
     }>(child) &&
     typeof child.props.children === "string"
   ) {
-    const language =
-      child.props.className?.replace("language-", "") || "text";
+    const language = child.props.className?.replace("language-", "") || "text";
     return (
       <CodeBlock language={language} filename={child.props?.metastring}>
         {child.props.children}
@@ -160,4 +193,3 @@ export const mdxComponents = {
   TechBadges,
   Video,
 };
-
